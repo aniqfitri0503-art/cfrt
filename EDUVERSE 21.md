@@ -1,0 +1,1 @@
+EDUVERSE 21 · Kemajuan disimpan pada peranti ini sahaja · Maklumat daripada Cikgu AI perlu disemak dengan guru.
