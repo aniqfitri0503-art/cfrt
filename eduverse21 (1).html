@@ -1,0 +1,847 @@
+<title>EDUVERSE 21</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Atkinson+Hyperlegible:wght@400;700&family=Baloo+2:wght@600;700;800&display=swap">
+<style>
+/* Layout: sticky top bar, scrollable journey rail, one focused module column. Signature motif: two "beat" bars (2 harakat = 2 ketukan). */
+:root{
+  --bg:#F1F7F6; --surface:#FFFFFF; --surface2:#E3F0EE; --ink:#0F2F2C; --muted:#44605D; --line:#C6DAD7;
+  --brand:#0B6B63; --brand-ink:#FFFFFF; --sun:#FFC83D; --sun-ink:#33260A;
+  --ok:#17794A; --ok-bg:#DDF3E6; --bad:#B8303F; --bad-bg:#FBE3E6;
+  --f-display:'Baloo 2','Trebuchet MS',system-ui,sans-serif;
+  --f-body:'Atkinson Hyperlegible',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-ar:'Amiri','Scheherazade New','Traditional Arabic',serif;
+  --r:18px; --shadow:0 6px 20px rgba(15,47,44,.09);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0A1C1B; --surface:#112A28; --surface2:#173533; --ink:#E7F3F1; --muted:#A3C0BC; --line:#2A4A47;
+  --brand:#4FD1C0; --brand-ink:#04211E; --sun:#FFCB47; --sun-ink:#2E2200;
+  --ok:#58D68D; --ok-bg:#12382A; --bad:#FF8A95; --bad-bg:#3D1C22; --shadow:0 6px 20px rgba(0,0,0,.35); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0A1C1B; --surface:#112A28; --surface2:#173533; --ink:#E7F3F1; --muted:#A3C0BC; --line:#2A4A47;
+  --brand:#4FD1C0; --brand-ink:#04211E; --sun:#FFCB47; --sun-ink:#2E2200;
+  --ok:#58D68D; --ok-bg:#12382A; --bad:#FF8A95; --bad-bg:#3D1C22; --shadow:0 6px 20px rgba(0,0,0,.35); color-scheme:dark}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 40px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--bg)}
+.wrap{max-width:1060px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-display);line-height:1.15;margin:0 0 .5em;text-wrap:balance}
+h1{font-size:clamp(1.9rem,4.5vw,2.9rem);font-weight:800}
+h2{font-size:1.5rem;font-weight:700}
+h3{font-size:1.15rem;font-weight:700}
+p{margin:0 0 .8em}
+a{color:var(--brand)}
+.muted{color:var(--muted)}
+.small{font-size:.9rem}
+.center{text-align:center}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.stack{display:flex;flex-direction:column;gap:14px}
+.ar{font-family:var(--f-ar);font-size:1.45em;line-height:1.9;direction:rtl;unicode-bidi:isolate;display:inline-block}
+:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+svg.i{width:1.15em;height:1.15em;flex:none;vertical-align:-.2em}
+
+/* top bar */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);padding-block:10px 8px}
+.top-in{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);margin-right:auto}
+.logo b{font-family:var(--f-display);font-size:1.35rem;font-weight:800;letter-spacing:.01em}
+.logo small{display:block;font-size:.72rem;color:var(--muted);letter-spacing:.04em}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:var(--surface2);color:var(--ink);font-weight:700;font-size:.88rem}
+.chip.sun{background:var(--sun);color:var(--sun-ink)}
+.chip.ok{background:var(--ok-bg);color:var(--ok)}
+.bar{height:10px;border-radius:99px;background:var(--surface2);overflow:hidden;flex:1;min-width:80px}
+.bar i{display:block;height:100%;background:var(--brand);border-radius:99px;transition:width .4s}
+.top-prog{display:flex;align-items:center;gap:10px;margin-top:8px;font-size:.85rem;color:var(--muted)}
+.rail{display:flex;gap:6px;overflow-x:auto;padding:6px 2px 12px;scrollbar-width:thin}
+.rail a{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:var(--surface);border:1.5px solid var(--line);color:var(--ink);text-decoration:none;font-weight:700;font-size:.9rem;min-height:44px}
+.rail a .n{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--surface2);font-size:.8rem}
+.rail a.done .n{background:var(--ok);color:var(--brand-ink)}
+.rail a[aria-current=page]{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+.rail a[aria-current=page] .n{background:var(--sun);color:var(--sun-ink)}
+
+/* page head */
+.assure{display:inline-flex;font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--brand);margin-bottom:6px}
+.instr{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:14px;background:var(--surface2);margin-block:6px 18px}
+.instr svg{color:var(--brand);margin-top:3px}
+.instr p{margin:0}
+
+/* cards, buttons */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--shadow);min-width:0}
+.panel{background:var(--surface2);border-radius:var(--r);padding:18px;min-width:0}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px}
+.grid3>*{min-width:0}
+.btn{font:inherit;font-weight:700;border:2px solid transparent;border-radius:14px;padding:11px 20px;min-height:46px;cursor:pointer;background:var(--brand);color:var(--brand-ink);display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;transition:transform .15s,box-shadow .15s}
+.btn:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+.btn.sun{background:var(--sun);color:var(--sun-ink)}
+.btn.ghost{background:transparent;color:var(--brand);border-color:var(--brand)}
+.btn[disabled]{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.foot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:32px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-block:14px 18px}
+.tab{font:inherit;font-weight:700;padding:9px 16px;border-radius:999px;border:2px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;min-height:44px;display:inline-flex;gap:6px;align-items:center}
+.tab[aria-selected=true]{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+.tab .ck{color:var(--ok)}
+.tab[aria-selected=true] .ck{color:var(--sun)}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.25fr 1fr;gap:28px;align-items:center;padding-block:10px 24px}
+.hero>*{min-width:0}
+.eyebrow{font-weight:700;font-size:.85rem;letter-spacing:.06em;text-transform:uppercase;color:var(--brand)}
+.tagline{font-family:var(--f-display);font-weight:700;color:var(--brand);font-size:1.15rem;margin-bottom:.6em}
+.msg-box{border-left:6px solid var(--sun);padding:6px 0 6px 16px;margin-block:18px;font-size:1.08rem}
+.bigidea{font-size:.95rem;color:var(--muted)}
+.beatcard{background:var(--surface);border:1px solid var(--line);border-radius:28px;padding:26px 22px;box-shadow:var(--shadow);text-align:center}
+.beatcard .ar{font-size:4.2rem;line-height:1.6}
+.beats{display:flex;gap:8px}
+.beat{flex:1;height:16px;border-radius:99px;background:var(--surface2);position:relative;overflow:hidden}
+.beat::after{content:"";position:absolute;inset:0;background:var(--sun);transform:scaleX(0);transform-origin:left}
+.run .beat::after{animation:fill 1.2s ease-out infinite}
+.run .beat:nth-child(2)::after{animation-delay:.6s}
+@keyframes fill{0%{transform:scaleX(0)}45%,100%{transform:scaleX(1)}}
+.beatlab{display:flex;gap:8px;margin-top:4px;font-weight:700;color:var(--muted)}
+.beatlab span{flex:1;text-align:center}
+@media(max-width:760px){.hero{grid-template-columns:1fr}}
+
+/* journey list */
+.journey{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:12px}
+.journey li a{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:16px;background:var(--surface);border:1.5px solid var(--line);text-decoration:none;color:var(--ink);height:100%}
+.journey .n{flex:none;display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--brand);color:var(--brand-ink);font-weight:800}
+.journey li.done .n{background:var(--ok)}
+.journey b{display:block}
+.journey span.d{font-size:.88rem;color:var(--muted)}
+.opts{display:flex;gap:8px;flex-wrap:wrap}
+.pick{font:inherit;font-weight:700;padding:9px 16px;border-radius:12px;border:2px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;min-height:44px}
+.pick[aria-pressed=true]{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+
+/* accordion / notes */
+.acc{border:1.5px solid var(--line);border-radius:16px;background:var(--surface);overflow:hidden}
+.acc+.acc{margin-top:10px}
+.acc>button{font:inherit;font-weight:700;width:100%;text-align:left;display:flex;justify-content:space-between;gap:10px;align-items:center;padding:14px 16px;background:transparent;color:var(--ink);border:0;cursor:pointer;min-height:52px}
+.acc .body{padding:0 16px 16px}
+.kw{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.eg{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;align-items:center;margin-top:8px}
+
+/* infographic */
+.steps{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.wordbig{font-family:var(--f-ar);font-size:4rem;line-height:1.7;direction:rtl;text-align:center}
+.wordbig .hl{background:var(--sun);color:var(--sun-ink);border-radius:10px;padding:0 4px}
+.map{width:100%;height:auto;display:block}
+.map .ln path{stroke:var(--brand);stroke-width:2;fill:none}
+.map .n0{fill:var(--brand)} .map .t0{fill:var(--brand-ink);font-family:var(--f-display);font-weight:700;font-size:22px}
+.map .t0b{fill:var(--brand-ink);font-size:15px;font-family:var(--f-body)}
+.map .n1{fill:var(--surface);stroke:var(--brand);stroke-width:2}
+.map .tx{fill:var(--ink);font-family:var(--f-body);font-size:15px}
+.map .tb{fill:var(--ink);font-family:var(--f-display);font-weight:700;font-size:19px}
+.map .ta{fill:var(--ink);font-family:var(--f-ar);font-size:34px}
+.map .ta2{fill:var(--brand);font-family:var(--f-ar);font-size:26px}
+
+/* video */
+.stage{background:var(--surface);border:1.5px solid var(--line);border-radius:22px;padding:22px;text-align:center}
+.stage .ar{font-size:3.6rem;line-height:1.6;margin:0 10px}
+.vbar{height:8px;border-radius:99px;background:var(--surface2);overflow:hidden;margin-block:14px}
+.vbar i{display:block;height:100%;width:0;background:var(--brand)}
+.dots{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.dot{width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:700;cursor:pointer}
+.dot[aria-current=true]{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+
+/* flashcards */
+.fc{perspective:1000px;max-width:520px;margin-inline:auto}
+.fc-in{position:relative;min-height:230px;transform-style:preserve-3d;transition:transform .5s}
+.fc.flip .fc-in{transform:rotateY(180deg)}
+.fc-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;align-items:center;justify-content:center;text-align:center;padding:22px;border-radius:22px;font-family:var(--f-display);font-weight:700;font-size:1.4rem;border:2px solid var(--line);cursor:pointer;width:100%;color:var(--ink);background:var(--surface)}
+.fc-back{transform:rotateY(180deg);background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+.fc-face .ar{font-size:1.5em}
+
+/* match */
+.mg{display:grid;grid-template-columns:1fr 1.5fr;gap:18px}
+.mg>*{min-width:0}
+@media(max-width:640px){.mg{grid-template-columns:1fr}}
+.chipd{display:inline-flex;align-items:center;gap:6px;padding:10px 16px;margin:0 8px 8px 0;border-radius:12px;background:var(--sun);color:var(--sun-ink);font:inherit;font-weight:700;border:2px solid transparent;cursor:grab;min-height:46px}
+.chipd[aria-pressed=true]{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand)}
+.slot{min-height:60px;border:2px dashed var(--line);border-radius:14px;padding:10px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--surface);width:100%;font:inherit;color:var(--ink);text-align:left;cursor:pointer;margin-bottom:10px}
+.slot.over{border-color:var(--brand);background:var(--surface2)}
+.slot.done{border-style:solid;border-color:var(--ok);background:var(--ok-bg);cursor:default}
+.slot b{color:var(--ok)}
+
+/* quiz */
+.qh{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.qtext{font-size:1.2rem;font-weight:700;margin-bottom:14px}
+.opt{display:flex;gap:12px;align-items:center;width:100%;text-align:left;font:inherit;padding:11px 14px;border:2px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink);cursor:pointer;min-height:50px;margin-bottom:10px}
+.opt:hover:not([disabled]){border-color:var(--brand)}
+.opt .ol{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--surface2);font-weight:800;font-size:.9rem}
+.opt.ok{border-color:var(--ok);background:var(--ok-bg)}
+.opt.bad{border-color:var(--bad);background:var(--bad-bg)}
+.opt[disabled]{cursor:default}
+.fb{padding:12px 14px;border-radius:14px;margin-block:8px 14px}
+.fb.ok{background:var(--ok-bg);border-left:6px solid var(--ok)}
+.fb.bad{background:var(--bad-bg);border-left:6px solid var(--bad)}
+.fb.hint{background:var(--surface2);border-left:6px solid var(--sun)}
+textarea,input[type=text]{font:inherit;width:100%;padding:10px 12px;border-radius:12px;border:2px solid var(--line);background:var(--surface);color:var(--ink)}
+.score{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center}
+.score .big{font-family:var(--f-display);font-weight:800;font-size:3.2rem;line-height:1;background:var(--sun);color:var(--sun-ink);border-radius:20px;padding:14px 20px}
+@media(max-width:520px){.score{grid-template-columns:1fr}}
+.review{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+.review li{padding:12px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+.tmr{height:10px;border-radius:99px;background:var(--surface2);overflow:hidden;margin-bottom:14px}
+.tmr i{display:block;height:100%;background:var(--sun);transition:width 1s linear}
+
+/* badges */
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.bd{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;padding:14px 10px;border-radius:16px;background:var(--surface);border:1.5px solid var(--line)}
+.bd .ico{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--surface2);color:var(--muted)}
+.bd.on .ico{background:var(--sun);color:var(--sun-ink)}
+.bd.on{border-color:var(--sun)}
+.bd small{color:var(--muted);font-size:.8rem}
+.bd:not(.on){opacity:.75}
+
+/* chat */
+.chat{display:flex;flex-direction:column;gap:10px;height:min(52vh,420px);overflow:auto;padding:12px;background:var(--surface2);border-radius:var(--r)}
+.msg{max-width:90%;padding:10px 14px;border-radius:16px;background:var(--surface);border:1px solid var(--line);align-self:flex-start}
+.msg.me{align-self:flex-end;background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+.msg .src{display:block;font-size:.78rem;color:var(--muted);margin-top:6px}
+.notice{padding:12px 14px;border-radius:14px;background:var(--surface);border:2px solid var(--sun);font-size:.92rem}
+.chatin{display:flex;gap:8px;margin-top:10px}
+.chatin input{flex:1;min-width:0}
+
+/* cert */
+.cert{border:3px solid var(--brand);border-radius:26px;padding:28px 22px;text-align:center;background:var(--surface);box-shadow:var(--shadow)}
+.cert .nm{font-family:var(--f-display);font-weight:800;font-size:2rem;color:var(--brand);min-height:1.3em;overflow-wrap:anywhere}
+.lockbox{opacity:.85}
+.kv{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+.kv div{background:var(--surface2);border-radius:14px;padding:10px 16px;min-width:110px}
+.kv b{display:block;font-family:var(--f-display);font-size:1.5rem}
+
+#toasts{position:fixed;left:0;right:0;bottom:calc(16px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;z-index:40;padding-inline:max(16px,env(safe-area-inset-left,0px))}
+.toast{background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-weight:700;box-shadow:var(--shadow);animation:pop .25s ease-out}
+@keyframes pop{from{transform:translateY(10px);opacity:0}to{transform:none;opacity:1}}
+footer{margin-top:40px;font-size:.85rem;color:var(--muted);text-align:center}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}.run .beat::after{transform:scaleX(1)}}
+</style>
+
+<div class="wrap">
+  <header class="top" id="top"></header>
+  <nav class="rail" id="rail" aria-label="Laluan pembelajaran"></nav>
+  <main id="app"></main>
+  <footer>EDUVERSE 21 · Kemajuan disimpan pada peranti ini sahaja · Maklumat daripada Cikgu AI perlu disemak dengan guru.</footer>
+</div>
+<div id="toasts" aria-live="polite"></div>
+
+<script>
+(function(){
+'use strict';
+var $=function(s,r){return (r||document).querySelector(s)};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+var esc=function(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
+var ar=function(s){return '<span class="ar" lang="ar" dir="rtl">'+s+'</span>'};
+var shuffle=function(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a};
+
+/* ---------- konfigurasi guru ---------- */
+var CONFIG={
+  VIDEO_URL:'',   /* Guru: letak pautan video tambahan (https://...) di sini. Kosong = ruang belum diaktifkan. */
+  AI_MODE:'rule-based' /* Cikgu AI ialah chatbot berasaskan peraturan. Belum disambungkan kepada model AI sebenar. */
+};
+
+/* ---------- ikon ---------- */
+var ICONS={check:'M5 12l5 5L20 7',play:'M8 5v14l11-7z',pause:'M7 5h4v14H7zM13 5h4v14h-4z',replay:'M4 12a8 8 0 1 0 3-6.2M4 4v5h5',
+ star:'M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z',lock:'M7 11V8a5 5 0 0 1 10 0v3M6 11h12v9H6z',
+ arrow:'M5 12h14M13 6l6 6-6 6',back:'M19 12H5M11 6l-6 6 6 6',vol:'M4 9v6h4l5 4V5L8 9zM16 9a4 4 0 0 1 0 6',
+ bulb:'M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z',down:'M6 9l6 6 6-6',up:'M6 15l6-6 6 6'};
+var FILLED={play:1,pause:1,star:1};
+function ic(n){return '<svg class="i" viewBox="0 0 24 24" aria-hidden="true" fill="'+(FILLED[n]?'currentColor':'none')+'" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="'+ICONS[n]+'"/></svg>'}
+
+/* ---------- keadaan & simpanan ---------- */
+var KEY='eduverse21.v1',mem=null;
+function defaults(){return {profile:{},done:{},aw:{},badges:[],obj:{},teroka:{},notes:{},flash:{},act:{},quiz:{},assess:{},path:{},pathway:null,rapid:null,asked:0,refl:null,nick:''}}
+function load(){try{var r=localStorage.getItem(KEY);if(r){var o=JSON.parse(r),d=defaults();for(var k in d){if(o[k]===undefined)o[k]=d[k]}return o}}catch(e){}return mem||defaults()}
+var S=load();
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){mem=S}}
+
+/* ---------- kandungan ---------- */
+var MODS=[
+ {id:'utama',t:'Utama'},{id:'objektif',t:'Objektif'},{id:'teroka',t:'Teroka'},{id:'alami',t:'Alami'},{id:'aplikasi',t:'Aplikasi'},
+ {id:'cikgu-ai',t:'Cikgu AI'},{id:'taksir',t:'Taksir'},{id:'refleksi',t:'Refleksi'},{id:'tamat',t:'Pencapaian'}];
+var IDX={};MODS.forEach(function(m,i){IDX[m.id]=i});
+var TITLES={utama:'Selamat datang',objektif:'Apa yang akan anda capai',teroka:'Teroka: bahan multimedia',alami:'Alami: aktiviti interaktif',aplikasi:'Aplikasi: laluan pembelajaran anda','cikgu-ai':'Cikgu AI, pembantu belajar',taksir:'Taksir: penilaian dalam talian',refleksi:'Refleksi dan peneguhan',tamat:'Pencapaian anda'};
+var AS={utama:'A · Analyze Learners',objektif:'S · State Objectives',teroka:'S · Select Methods, Media and Materials',alami:'U · Utilize Media · R · Require Participation',aplikasi:'R · Require Learner Participation','cikgu-ai':'R · Require Learner Participation',taksir:'E · Evaluate',refleksi:'E · Evaluate and Revise',tamat:'E · Evaluate and Revise'};
+var INSTR={utama:'Tekan “Mula Pembelajaran”. Jawab tiga soalan ringkas di bawah supaya laluan sesuai untuk anda.',
+ objektif:'Buka setiap kad, kemudian tekan “Saya faham” bila sudah jelas.',
+ teroka:'Cuba kelima-lima tab. Setiap tab ditandakan bila anda selesai.',
+ alami:'Pilih satu aktiviti. Selesaikan keempat-empatnya untuk mendapat lencana.',
+ aplikasi:'Pilih laluan yang sesuai. Anda boleh menukar laluan bila-bila masa.',
+ 'cikgu-ai':'Taip soalan atau tekan butang cadangan. Jangan taip maklumat peribadi.',
+ taksir:'Jawab Pra-Penilaian dahulu. Lakukan Pasca-Penilaian selepas anda belajar.',
+ refleksi:'Fikir tentang apa yang anda telah belajar, kemudian hantar refleksi.',tamat:'Lihat lencana, mata dan sijil anda.'};
+var JD={utama:'Kenali diri dan mulakan',objektif:'Tahu apa yang akan dicapai',teroka:'Nota, infografik, video, audio, kad imbas',alami:'Padankan, kuiz, misi, cabaran',aplikasi:'Laluan pemula, pertengahan atau mahir','cikgu-ai':'Tanya, minta petunjuk, soalan latihan',taksir:'Pra, formatif dan pasca',refleksi:'Apa yang telah dipelajari',tamat:'Lencana dan sijil'};
+
+var TAGS={definisi:'Definisi Mad Asli',huruf:'Huruf mad dan baris',bacaan:'Kadar bacaan 2 harakat',kenal:'Mengenal pasti dalam perkataan',hots:'Pemikiran aras tinggi'};
+var TAGHINT={definisi:'Ingat: ketuk meja dua kali. Mad Asli = 2 harakat.',huruf:'Huruf mad ada tiga: alif, wau dan ya. Lihat baris huruf sebelumnya.',bacaan:'Bayangkan dua ketukan jari, tidak lebih dan tidak kurang.',kenal:'Cari alif, wau atau ya. Semak baris sebelumnya, kemudian semak apa yang datang selepasnya.',hots:'Fikir apa yang berlaku jika bacaan terlalu panjang atau terlalu pendek, dan apa yang menyebabkan Mad Asli berubah.'};
+
+var QB={
+ q1:{t:'definisi',q:'Mad Asli dibaca berapa harakat?',o:['1 harakat','2 harakat','4 harakat','6 harakat'],a:1,e:'Mad Asli dibaca 2 harakat, iaitu 2 ketukan. Tidak lebih dan tidak kurang.'},
+ q2:{t:'huruf',q:'Apakah huruf-huruf mad?',o:['Alif, wau dan ya','Ba, ta dan tha','Mim, nun dan lam','Qaf, kaf dan lam'],a:0,e:'Huruf mad ada tiga: alif, wau mati dan ya mati.'},
+ q3:{t:'huruf',q:'Alif menjadi huruf mad apabila huruf sebelumnya berbaris…',o:['atas (fathah)','bawah (kasrah)','depan (dhammah)','mati (sukun)'],a:0,e:'Alif menjadi huruf mad selepas huruf yang berbaris atas, contohnya '+ar('قَالَ')+'.'},
+ q4:{t:'definisi',q:'Mad Asli juga dikenali sebagai Mad Thabi\'i.',o:['Betul','Salah'],a:0,e:'Betul. Mad Asli dan Mad Thabi\'i ialah dua nama bagi mad yang sama.'},
+ q5:{t:'kenal',q:'Perkataan manakah mengandungi Mad Asli?',o:[ar('قَالَ'),ar('جَاءَ'),ar('الضَّالِّينَ')],a:0,e:ar('قَالَ')+' ada alif selepas baris atas dan tiada hamzah atau sukun selepasnya. '+ar('جَاءَ')+' ada hamzah selepas alif. '+ar('الضَّالِّينَ')+' ada huruf bertasydid selepas alif. Dua perkataan itu bukan Mad Asli.'},
+ q6:{t:'huruf',q:'Wau menjadi huruf mad apabila wau itu mati dan huruf sebelumnya berbaris…',o:['depan (dhammah)','atas (fathah)','bawah (kasrah)'],a:0,e:'Wau mati menjadi huruf mad selepas baris depan, contohnya '+ar('يَقُولُ')+'.'},
+ q7:{t:'bacaan',q:'Mad Asli boleh dibaca sehingga 6 harakat.',o:['Betul','Salah'],a:1,e:'Salah. Mad Asli hanya 2 harakat. Bacaan 4 atau 6 harakat ialah untuk jenis mad lain.'},
+ q8:{t:'kenal',q:'Dalam '+ar('يَقُولُ')+', huruf mad ialah…',o:['wau mati selepas baris depan','alif selepas baris atas','ya mati selepas baris bawah','tiada huruf mad'],a:0,e:'Huruf ق berbaris depan, diikuti wau mati. Itulah huruf mad dalam perkataan ini.'},
+ q9:{t:'kenal',q:'Jika selepas huruf mad ada hamzah, bacaannya masih Mad Asli.',o:['Betul','Salah'],a:1,e:'Salah. Hamzah atau sukun selepas huruf mad menjadikan bacaan itu mad jenis lain, bukan Mad Asli.'},
+ q10:{t:'bacaan',q:'Seorang murid membaca '+ar('قِيلَ')+' dengan 2 ketukan pada bunyi “qii”. Bacaan ini…',o:['betul','terlalu pendek','terlalu panjang'],a:0,e:'Betul. Ya mati selepas baris bawah ialah Mad Asli, dan 2 ketukan ialah kadar yang tepat.'},
+ q11:{t:'kenal',q:'Dalam '+ar('قِيلَ')+', huruf mad ialah…',o:['ya mati selepas baris bawah','wau mati selepas baris depan','alif selepas baris atas'],a:0,e:'Huruf ق berbaris bawah, diikuti ya mati. Itulah huruf mad dalam perkataan ini.'},
+ q12:{t:'huruf',q:'Ya menjadi huruf mad apabila ya itu mati dan huruf sebelumnya berbaris bawah.',o:['Betul','Salah'],a:0,e:'Betul. Contohnya '+ar('قِيلَ')+'.'},
+ q13:{t:'bacaan',q:'Dua ketukan jari bersamaan dengan…',o:['2 harakat','1 harakat','4 harakat'],a:0,e:'Satu harakat lebih kurang satu ketukan jari, jadi 2 ketukan ialah 2 harakat.'},
+ q14:{t:'hots',q:'Mengapakah mad ini dipanggil “asli”?',o:['Kerana panjangnya tetap dan tidak bergantung pada sebab lain seperti hamzah atau sukun','Kerana ia paling panjang antara semua mad','Kerana ia hanya ada dalam surah pendek'],a:0,e:'Mad Asli ialah mad yang asal. Panjangnya tetap 2 harakat dan tidak bergantung pada hamzah atau sukun.'},
+ q15:{t:'hots',q:'Adik membaca '+ar('قَالَ')+' dengan 6 harakat kerana mahu bacaan lebih sedap. Apakah nasihat terbaik?',o:['Tidak mengapa, makin panjang makin bagus','Ingatkan bahawa Mad Asli hanya 2 harakat, dan bacaan terlalu panjang boleh menyalahi hukum tajwid','Suruh dia berhenti membaca'],a:1,e:'Nasihat yang baik ialah membetulkan dengan lembut. Mad Asli 2 harakat, dan bacaan yang terlalu panjang menyalahi hukum tajwid.'},
+ q16:{t:'kenal',q:'Dalam '+ar('الرَّحْمٰنِ')+', tanda alif kecil di atas huruf mim menunjukkan…',o:['Mad Asli pada mim, dibaca 2 harakat','bacaan pendek 1 harakat','mad 6 harakat'],a:0,e:'Alif kecil (alif khanjariah) memberi Mad Asli, dibaca 2 harakat.'},
+ /* misi */
+ m1:{t:'bacaan',q:'Misi 1. Aiman membaca '+ar('قَالَ')+' dengan 1 ketukan sahaja. Apakah yang perlu dibetulkan?',o:['Panjangkan bunyi “qaa” sehingga 2 ketukan','Pendekkan lagi','Panjangkan sehingga 6 ketukan'],a:0,h:'Ingat, Mad Asli dibaca 2 harakat.',e:'Betul. Bunyi “qaa” perlu 2 ketukan.'},
+ m2:{t:'kenal',q:'Misi 2. Cari huruf mad dalam '+ar('يَقُولُ')+'. Yang manakah?',o:[ar('ي'),ar('ق'),ar('و'),ar('ل')],a:2,h:'Cari huruf yang mati selepas baris depan.',e:'Wau mati selepas ق yang berbaris depan ialah huruf mad.'},
+ m3:{t:'kenal',q:'Misi 3. Pilih perkataan yang BUKAN Mad Asli.',o:[ar('قَالَ'),ar('قِيلَ'),ar('جَاءَ')],a:2,h:'Lihat apa yang datang selepas huruf mad. Ada hamzah?',e:ar('جَاءَ')+' ada hamzah selepas alif, jadi bukan Mad Asli.'},
+ /* laluan */
+ b1:{t:'definisi',q:'Mad Asli dibaca…',o:['2 ketukan','6 ketukan','tidak perlu dipanjangkan'],a:0,h:'Ketuk meja dua kali: satu, dua.',e:'Betul, Mad Asli ialah 2 ketukan.'},
+ b2:{t:'huruf',q:'Huruf manakah BUKAN huruf mad?',o:[ar('ا'),ar('و'),ar('ب')],a:2,h:'Huruf mad ada tiga sahaja: alif, wau dan ya.',e:'Ba bukan huruf mad. Huruf mad ialah alif, wau dan ya.'},
+ b3:{t:'bacaan',q:'Dalam '+ar('قَالَ')+', bunyi “qaa” dipanjangkan 2 ketukan.',o:['Betul','Salah'],a:0,h:'Alif selepas baris atas ialah huruf mad.',e:'Betul. Itulah Mad Asli.'},
+ i1:{t:'kenal',q:'Bila nampak alif, wau atau ya, apakah langkah pertama?',o:['Semak baris huruf sebelumnya','Baca 6 harakat','Abaikan huruf itu'],a:0,h:'Huruf mad perlu didahului baris yang sesuai.',e:'Betul. Semak dahulu sama ada barisnya atas, depan atau bawah.'},
+ i2:{t:'kenal',q:'Perkataan manakah dibaca 2 harakat sahaja?',o:[ar('يَقُولُ'),ar('جَاءَ'),ar('الضَّالِّينَ')],a:0,h:'Cari yang tiada hamzah atau sukun selepas huruf mad.',e:ar('يَقُولُ')+' ialah Mad Asli. Dua yang lain ada hamzah atau tasydid selepas huruf mad.'},
+ i3:{t:'kenal',q:'Selepas huruf mad ada hamzah atau sukun. Apakah kesimpulannya?',o:['Bukan Mad Asli','Mad Asli','Tiada mad langsung'],a:0,h:'Mad Asli tidak boleh ada hamzah atau sukun selepas huruf mad.',e:'Betul. Ia menjadi mad jenis lain.'},
+ a1:{t:'hots',q:'Rakan membaca '+ar('يَقُولُ')+' dengan 1 harakat sahaja. Apakah kesannya dan cara membetulkannya?',o:['Terlalu pendek. Ajak dia mengetuk dua kali sambil membaca “yaquu”','Tidak mengapa, bunyinya sama','Terlalu panjang. Suruh dia berhenti'],a:0,h:'Bandingkan dengan kadar tepat 2 ketukan.',e:'Bacaan terlalu pendek. Mengetuk dua kali membantu rakan merasai kadar yang betul.'},
+ a2:{type:'open',q:'Reka satu cara mudah untuk mengingat tiga huruf mad dan bacaan 2 ketukan. Boleh jadi lagu pendek, gerakan tangan atau singkatan.',fbk:'Idea yang bagus! Tunjukkan kepada cikgu dan rakan supaya mereka boleh mencubanya.'},
+ a3:{t:'hots',q:'Mengapakah '+ar('جَاءَ')+' bukan Mad Asli?',o:['Kerana ada hamzah selepas alif','Kerana tiada alif','Kerana dibaca 2 harakat'],a:0,h:'Lihat huruf selepas alif.',e:'Hamzah selepas huruf mad menjadikannya mad jenis lain.'}
+};
+var QC={
+ b:{title:'Cabaran Kuiz',qids:['q3','q5','q6','q8','q9','q11'],intro:'Enam soalan pilihan jawapan dan betul atau salah. Penjelasan muncul selepas setiap jawapan.',onDone:function(z){S.act.quiz=true;S.quiz.b=Math.max(S.quiz.b||0,z.ok);award('quiz',(S.quiz.b)*10)}},
+ m:{title:'Misi Penyelamat Bacaan',qids:['m1','m2','m3'],retry:true,intro:'Cikgu Amir meminta bantuan anda membetulkan bacaan murid. Selesaikan tiga misi. Petunjuk disediakan jika anda perlu.',onDone:function(z){S.act.mission=true;award('mission',Math.max(12,30-z.hu*4))}},
+ pra:{title:'Pra-Penilaian',qids:['q1','q2','q4','q7','q13'],intro:'Lima soalan untuk melihat apa yang anda sudah tahu. Tidak mengapa jika belum pasti. Ini membantu kami memilih laluan yang sesuai.',onDone:function(z){S.assess.pra={ok:z.ok,n:z.qids.length,tags:tagStats(z.log)};award('pra',z.ok*2)}},
+ form:{title:'Penilaian Formatif',qids:['q10','q12','q14','q16','q2'],intro:'Lima soalan semasa belajar untuk menyemak kefahaman anda.',onDone:function(z){S.assess.form={ok:z.ok,n:z.qids.length,tags:tagStats(z.log)};award('form',z.ok*3)}},
+ pasca:{title:'Pasca-Penilaian',qids:['q1','q9','q11','q10','q14','q15','q16','q5'],intro:'Lapan soalan untuk melihat sejauh mana anda telah maju. Anda perlu 6 betul untuk mendapat lencana Bintang Pasca.',onDone:function(z){S.assess.pasca={ok:z.ok,n:z.qids.length,tags:tagStats(z.log)};award('pasca',z.ok*6)}},
+ pb:{title:'Latihan Pemula',qids:['b1','b2','b3'],retry:true,intro:'Tiga soalan asas dengan petunjuk.',onDone:function(z){S.path.b=true;award('path-b',z.ok*15)}},
+ pi:{title:'Latihan Pertengahan',qids:['i1','i2','i3'],retry:true,intro:'Tiga soalan aplikasi dengan penyelesaian berpandu.',onDone:function(z){S.path.i=true;award('path-i',z.ok*15)}},
+ pa:{title:'Cabaran Mahir',qids:['a1','a2','a3'],retry:true,intro:'Soalan pemikiran aras tinggi dan satu tugasan kreatif.',onDone:function(z){S.path.a=true;award('path-a',z.ok*15)}}
+};
+var OBJ=[
+ {k:'Saya akan belajar',t:'mengenal tiga huruf mad, iaitu alif, wau dan ya, serta baris yang mesti ada sebelumnya.',c:'Saya boleh menyebut ketiga-tiga huruf mad dan baris sebelumnya.'},
+ {k:'Saya akan faham',t:'bahawa Mad Asli dibaca 2 harakat dan tidak boleh ada hamzah atau sukun selepas huruf mad.',c:'Saya boleh menerangkan mengapa '+ar('جَاءَ')+' bukan Mad Asli.'},
+ {k:'Saya akan dapat tunjukkan',t:'cara mengenal pasti Mad Asli dalam perkataan dan membacanya dengan 2 ketukan.',c:'Saya mendapat sekurang-kurangnya 6 daripada 8 soalan dalam Pasca-Penilaian.'}];
+var TK=['nota','info','video','audio','flash'];
+var TKN={nota:'Nota',info:'Infografik',video:'Video',audio:'Audio',flash:'Kad imbas'};
+var NOTES=[
+ {h:'Apakah mad?',kw:['mad','memanjangkan bunyi'],b:'Mad bermaksud memanjangkan bunyi ketika membaca al-Quran. Panjang bunyi dikira dengan harakat.'},
+ {h:'Apakah Mad Asli?',kw:['2 harakat','Mad Thabi\'i'],b:'Mad Asli ialah mad yang paling asas. Ia dibaca <b>2 harakat</b> (2 ketukan) dan dipanggil juga Mad Thabi\'i. Selepas huruf mad tidak ada hamzah atau sukun.'},
+ {h:'Tiga huruf mad',kw:['alif','wau mati','ya mati'],b:'Alif selepas baris atas. Wau mati selepas baris depan. Ya mati selepas baris bawah.'},
+ {h:'Contoh bacaan',eg:[['قَالَ','qaa-la','alif selepas baris atas'],['يَقُولُ','ya-quu-lu','wau mati selepas baris depan'],['قِيلَ','qii-la','ya mati selepas baris bawah']]},
+ {h:'Peringatan penting',kw:['hamzah','sukun'],b:'Jika selepas huruf mad ada hamzah atau sukun, bacaan itu bukan lagi Mad Asli. Contohnya '+ar('جَاءَ')+' ada hamzah selepas alif.'}];
+var ISTEP=[
+ {h:'Cari huruf mad',t:'Cari alif, wau atau ya dalam perkataan. Dalam perkataan ini, alif ialah huruf mad.',hl:[1]},
+ {h:'Lihat baris sebelumnya',t:'Huruf sebelum alif ialah qaf berbaris atas. Alif selepas baris atas memang huruf mad.',hl:[0,1]},
+ {h:'Semak apa selepasnya',t:'Selepas alif ialah lam berbaris atas. Tiada hamzah dan tiada sukun, jadi ini Mad Asli.',hl:[2]},
+ {h:'Baca 2 harakat',t:'Panjangkan bunyi “qaa” sebanyak 2 ketukan: satu, dua. Kemudian sambung “la”.',hl:[0,1,2],beats:true}];
+var SC=[
+ {t:'Apakah mad?',x:'Mad bermaksud memanjangkan bunyi ketika membaca al-Quran.',w:['مَدّ'],b:false},
+ {t:'Mad Asli = 2 harakat',x:'Mad Asli dibaca 2 harakat. Kira dua ketukan: satu, dua.',w:['قَالَ'],b:true,
+  q:{q:'Berapa ketukan untuk Mad Asli?',o:['1 ketukan','2 ketukan','4 ketukan'],a:1,e:'Mad Asli dibaca 2 harakat, iaitu 2 ketukan.'}},
+ {t:'Tiga huruf mad',x:'Alif selepas baris atas, wau mati selepas baris depan, ya mati selepas baris bawah.',w:['قَالَ','يَقُولُ','قِيلَ'],b:false},
+ {t:'Bila bukan Mad Asli?',x:'Jika ada hamzah atau sukun selepas huruf mad, bacaan itu bukan Mad Asli.',w:['جَاءَ'],b:false,
+  q:{q:'Mengapakah جَاءَ bukan Mad Asli?',o:['Ada hamzah selepas huruf mad','Tiada alif','Terlalu pendek'],a:0,e:'Hamzah selepas alif menjadikannya mad jenis lain.'}}];
+var AT=[
+ {t:'Pengenalan mad',s:'Mad bermaksud memanjangkan bunyi ketika membaca al-Quran. Mad Asli dibaca dua harakat, iaitu dua ketukan.'},
+ {t:'Tiga huruf mad',s:'Huruf mad ada tiga. Alif selepas baris atas. Wau mati selepas baris depan. Ya mati selepas baris bawah.'},
+ {t:'Contoh bacaan',s:'Perkataan qaala ada alif selepas baris atas. Perkataan yaquulu ada wau mati selepas baris depan. Perkataan qiila ada ya mati selepas baris bawah. Semuanya dibaca dua ketukan.'}];
+var FC=[
+ ['Berapa harakat Mad Asli?','2 harakat (2 ketukan)'],['Sebut tiga huruf mad','Alif '+ar('ا')+', wau '+ar('و')+', ya '+ar('ي')],
+ ['Alif jadi huruf mad selepas baris…','Atas (fathah)'],['Wau mati jadi huruf mad selepas baris…','Depan (dhammah)'],
+ ['Ya mati jadi huruf mad selepas baris…','Bawah (kasrah)'],['Contoh Mad Asli dengan alif',ar('قَالَ')+'<br><small>qaa-la</small>'],
+ ['Contoh Mad Asli dengan wau',ar('يَقُولُ')+'<br><small>ya-quu-lu</small>'],['Contoh Mad Asli dengan ya',ar('قِيلَ')+'<br><small>qii-la</small>'],
+ ['Nama lain Mad Asli','Mad Thabi\'i'],['Ada hamzah atau sukun selepas huruf mad?','Bukan Mad Asli lagi. Ia mad jenis lain.']];
+var MP=[['Mad Asli','Mad yang dibaca 2 harakat'],['Huruf mad','Alif, wau mati dan ya mati yang memanjangkan bunyi'],['Alif '+ar('ا'),'Huruf mad selepas baris atas'],['Wau mati '+ar('وْ'),'Huruf mad selepas baris depan'],['Ya mati '+ar('يْ'),'Huruf mad selepas baris bawah']];
+var RQ=[
+ {q:'Alif, wau dan ya ialah huruf mad.',a:true,e:'Betul. Itulah tiga huruf mad.'},
+ {q:'Mad Asli dibaca 2 harakat.',a:true,e:'Betul. 2 harakat ialah 2 ketukan.'},
+ {q:'Mad Asli dibaca 6 harakat.',a:false,e:'Salah. Mad Asli hanya 2 harakat.'},
+ {q:'Wau mati selepas baris atas ialah huruf mad.',a:false,e:'Salah. Wau mati menjadi huruf mad selepas baris depan.'},
+ {q:ar('قِيلَ')+' mempunyai Mad Asli pada huruf ya.',a:true,e:'Betul. Ya mati selepas baris bawah.'},
+ {q:'Hamzah selepas huruf mad masih Mad Asli.',a:false,e:'Salah. Itu sudah menjadi mad jenis lain.'}];
+var PATHS=[{id:'b',n:'Pemula',d:'Penerangan mudah, gambar, contoh berpandu dan banyak petunjuk.'},
+ {id:'i',n:'Pertengahan',d:'Latihan aplikasi dan penyelesaian masalah berpandu.'},
+ {id:'a',n:'Mahir',d:'Soalan pemikiran aras tinggi dan tugasan kreatif.'}];
+var PQ={b:'pb',i:'pi',a:'pa'};
+var LEARNED=['Mad Asli dibaca 2 harakat.','Tiga huruf mad ialah alif, wau dan ya.','Huruf mad perlu didahului baris yang sesuai.','Hamzah atau sukun selepas huruf mad bukan Mad Asli.','Saya boleh membaca perkataan Mad Asli dengan 2 ketukan.'];
+var LEVELS=[[0,'Peneroka Baru'],[60,'Pengembara Ilmu'],[160,'Pahlawan Mad'],[300,'Bintang Mad']];
+var BADGES=[
+ {id:'explorer',n:'Penjelajah',d:'Selesaikan semua bahan Teroka',f:function(){return isDone.teroka()}},
+ {id:'match',n:'Pemadan Pintar',d:'Padankan semua konsep',f:function(){return !!S.act.match}},
+ {id:'quiz',n:'Juara Kuiz',d:'5 atau lebih betul dalam kuiz',f:function(){return (S.quiz.b||0)>=5}},
+ {id:'mission',n:'Penyelamat Bacaan',d:'Tamatkan misi',f:function(){return !!S.act.mission}},
+ {id:'rapid',n:'Kilat Mad',d:'5 atau lebih betul dalam cabaran kilat',f:function(){return !!S.rapid&&S.rapid.right>=5}},
+ {id:'ai',n:'Sahabat Cikgu AI',d:'Bertanya kepada Cikgu AI',f:function(){return S.asked>=1}},
+ {id:'path',n:'Pemilih Laluan',d:'Siapkan satu laluan',f:function(){return !!(S.path.b||S.path.i||S.path.a)}},
+ {id:'post',n:'Bintang Pasca',d:'6 atau lebih betul dalam pasca',f:function(){return !!S.assess.pasca&&S.assess.pasca.ok>=6}},
+ {id:'reflect',n:'Pemikir Reflektif',d:'Hantar refleksi',f:function(){return !!S.refl}}];
+
+/* ---------- logik kemajuan ---------- */
+var isDone={
+ utama:function(){return !!S.done.start},
+ objektif:function(){return OBJ.every(function(_,i){return S.obj[i]})},
+ teroka:function(){return TK.every(function(k){return S.teroka[k]})},
+ alami:function(){return !!(S.act.match&&S.act.quiz&&S.act.mission&&S.act.rapid)},
+ aplikasi:function(){return !!(S.path.b||S.path.i||S.path.a)},
+ 'cikgu-ai':function(){return S.asked>=1},
+ taksir:function(){return !!(S.assess.pra&&S.assess.pasca)},
+ refleksi:function(){return !!S.refl},
+ tamat:function(){return false}};
+function learnMods(){return MODS.slice(0,8)}
+function doneCount(){return learnMods().filter(function(m){return isDone[m.id]()}).length}
+function total(){var t=0;for(var k in S.aw)t+=S.aw[k];return t}
+function lvl(){var p=total(),i=0;LEVELS.forEach(function(l,j){if(p>=l[0])i=j});var nx=LEVELS[i+1];return {name:LEVELS[i][1],i:i,next:nx?nx[0]:null,pct:nx?Math.round((p-LEVELS[i][0])/(nx[0]-LEVELS[i][0])*100):100}}
+function award(k,p){var o=S.aw[k]||0;if(p>o){S.aw[k]=p;toast('+'+(p-o)+' mata')}save()}
+function save(){persist();var earned=BADGES.filter(function(b){return b.f()}).map(function(b){return b.id});
+  earned.forEach(function(id){if(S.badges.indexOf(id)<0){S.badges.push(id);var b=BADGES.filter(function(x){return x.id===id})[0];toast('Lencana baharu: '+b.n);}});persist();chrome()}
+function toast(m){var d=document.createElement('div');d.className='toast';d.textContent=m;var c=$('#toasts');c.appendChild(d);setTimeout(function(){if(d.parentNode)d.parentNode.removeChild(d)},2600)}
+function recPath(){var p=S.assess.pra;if(p){var r=p.ok/p.n;return r<0.5?'b':(r<1?'i':'a')}
+  var pr=S.profile.prior;if(pr==='good')return 'a';if(pr==='some')return 'i';return 'b'}
+function tagStats(log){var o={};log.forEach(function(l){var t=QB[l.id]&&QB[l.id].t;if(!t)return;var s=o[t]||(o[t]={ok:0,n:0});s.n++;if(l.ok)s.ok++});return o}
+function weakTags(){var a=S.assess.pasca||S.assess.pra||S.assess.form;if(!a)return[];return Object.keys(a.tags).filter(function(k){return a.tags[k].ok<a.tags[k].n})}
+
+/* ---------- routing & kerangka ---------- */
+var UI={tk:null,al:'A',as:'pra',no:-1,is:0,fc:0,rs:false};
+var cleanups=[];
+function cleanup(){cleanups.forEach(function(f){try{f()}catch(e){}});cleanups=[]}
+function cur(){var h=(location.hash||'').slice(1);return IDX[h]!==undefined?h:'utama'}
+function chrome(){
+  var L=lvl(),dc=doneCount(),c=cur();
+  $('#top').innerHTML='<div class="top-in"><a class="logo" href="#utama" aria-label="EDUVERSE 21, halaman utama">'+
+   '<svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true"><rect width="40" height="40" rx="12" fill="var(--brand)"/><circle cx="14" cy="24" r="6" fill="var(--sun)"/><circle cx="27" cy="16" r="6" fill="var(--brand-ink)"/></svg>'+
+   '<span><b>EDUVERSE 21</b><small>EXPLORE · EXPERIENCE · ENGAGE · EXCEL</small></span></a>'+
+   '<span class="chip">'+ic('star')+' '+total()+' mata</span><span class="chip sun">'+esc(L.name)+'</span></div>'+
+   '<div class="top-prog"><div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="8" aria-valuenow="'+dc+'" aria-label="Kemajuan pembelajaran"><i style="width:'+(dc/8*100)+'%"></i></div><span>'+dc+' / 8 modul selesai</span></div>';
+  var rail=$('#rail'),prev=rail.scrollLeft;
+  rail.innerHTML=MODS.map(function(m,i){var d=m.id!=='tamat'&&isDone[m.id]();
+    return '<a href="#'+m.id+'" class="'+(d?'done':'')+'"'+(m.id===c?' aria-current="page"':'')+'><span class="n">'+(d?ic('check'):(i+1))+'</span>'+esc(m.t)+'</a>'}).join('');
+  var a=$('a[aria-current]',rail);if(a){var want=a.offsetLeft-rail.clientWidth/2+a.offsetWidth/2;rail.scrollLeft=(prev&&Math.abs(prev-want)<4)?prev:Math.max(0,want)}
+}
+function head(id){
+  var tip=(id!=='utama'&&S.profile.digital==='low')?' Jika perlu bantuan, minta cikgu atau rakan menolong anda.':'';
+  return (id==='utama'?'':'<span class="assure">ASSURE · '+AS[id]+'</span><h1>'+TITLES[id]+'</h1>')+'<div class="instr">'+ic('bulb')+'<p><b>Arahan.</b> '+INSTR[id]+tip+'</p></div>'}
+function foot(id){var i=IDX[id],p=MODS[i-1],n=MODS[i+1];
+  return '<div class="foot">'+(p?'<a class="btn ghost" href="#'+p.id+'">'+ic('back')+' '+p.t+'</a>':'<span></span>')+(n?'<a class="btn sun" href="#'+n.id+'">'+n.t+' '+ic('arrow')+'</a>':'')+'</div>'}
+function tabs(g,list,curv,doneFn){return '<div class="tabs" role="tablist">'+list.map(function(t){var d=doneFn&&doneFn(t[0]);
+  return '<button class="tab" role="tab" data-fk="tab-'+g+t[0]+'" aria-selected="'+(curv===t[0])+'" data-a="tab" data-g="'+g+'" data-v="'+t[0]+'">'+t[1]+(d?' <span class="ck">'+ic('check')+'</span>':'')+'</button>'}).join('')+'</div>'}
+function draw(){
+  cleanup();
+  var fk=document.activeElement&&document.activeElement.dataset&&document.activeElement.dataset.fk;
+  var id=cur(),v=VIEWS[id];
+  $('#app').innerHTML=head(id)+v.html()+foot(id);
+  if(v.init)v.init();
+  chrome();
+  if(fk){var n=$('[data-fk="'+fk+'"]');if(n)n.focus({preventScroll:true})}
+}
+function route(){window.scrollTo(0,0);draw()}
+
+/* ---------- enjin kuiz ---------- */
+var QZ={};
+function qzStart(id){var c=QC[id];QZ[id]={id:id,qids:c.qids,retry:!!c.retry,i:0,ok:0,log:[],st:'ask',tries:0,hintOn:false,dis:[],hu:0,msg:'',pick:null,fin:false};qzDraw(id)}
+function qzDraw(id){
+  var el=document.getElementById('qz-'+id);if(!el)return;var z=QZ[id],c=QC[id];
+  if(!z){el.innerHTML='<div class="panel"><h3>'+c.title+'</h3><p>'+c.intro+'</p><button class="btn sun" data-a="qz-go" data-id="'+id+'" data-fk="qzgo-'+id+'">Mula</button></div>';return}
+  if(z.st==='sum'){el.innerHTML=qzSum(z);return}
+  var n=z.qids.length,q=QB[z.qids[z.i]],h='<div class="qh"><span class="chip">'+c.title+' · Soalan '+(z.i+1)+' / '+n+'</span><div class="bar"><i style="width:'+(z.i/n*100)+'%"></i></div></div><p class="qtext">'+q.q+'</p>';
+  if(q.type==='open'){
+    h+=z.st==='ask'?'<label class="small muted" for="qo-'+id+'">Tulis jawapan anda. Jangan tulis nama penuh, alamat atau nombor telefon.</label><textarea id="qo-'+id+'" rows="4" maxlength="400"></textarea><div class="row" style="margin-top:10px"><button class="btn" data-a="qz-open" data-id="'+id+'">Hantar idea</button></div>':'';
+  }else{
+    h+=q.o.map(function(o,k){var cl='',dis=z.st==='fb'||z.dis.indexOf(k)>=0;
+      if(z.st==='fb'){if(k===q.a)cl=' ok';else if(k===z.pick)cl=' bad'}else if(z.dis.indexOf(k)>=0)cl=' bad';
+      return '<button class="opt'+cl+'" data-a="qz-pick" data-id="'+id+'" data-k="'+k+'" data-fk="o'+k+'"'+(dis?' disabled':'')+'><span class="ol">'+'ABCD'.charAt(k)+'</span><span>'+o+'</span></button>'}).join('');
+  }
+  if(q.h&&z.st==='ask'){h+=z.hintOn?'<div class="fb hint" role="status"><b>Petunjuk:</b> '+q.h+'</div>':'<button class="btn ghost" data-a="qz-hint" data-id="'+id+'">'+ic('bulb')+' Minta petunjuk</button>'}
+  if(z.msg){h+='<div class="fb '+(z.st==='fb'?(z.good?'ok':'bad'):'hint')+'" role="status">'+z.msg+'</div>'}
+  if(z.st==='fb'){h+='<button class="btn sun" data-a="qz-next" data-id="'+id+'" data-fk="qznext">'+(z.i+1>=n?'Lihat keputusan':'Seterusnya')+' '+ic('arrow')+'</button>'}
+  el.innerHTML=h;
+  if(z.st==='fb'){var b=$('[data-fk="qznext"]',el);if(b)b.focus({preventScroll:true})}
+}
+function qzSum(z){
+  var n=z.qids.length,pct=Math.round(z.ok/n*100),ts=tagStats(z.log),c=QC[z.id];
+  var good=Object.keys(ts).filter(function(k){return ts[k].ok===ts[k].n}),weak=Object.keys(ts).filter(function(k){return ts[k].ok<ts[k].n});
+  var msg=pct>=90?'Hebat sekali! Anda menguasai bahagian ini.':pct>=75?'Bagus! Anda hampir menguasai semuanya.':pct>=50?'Usaha yang baik! Baca semula nota dan cuba lagi.':'Anda sudah bermula, dan itu penting. Lihat nota atau tanya Cikgu AI, kemudian cuba lagi.';
+  var wrong=z.log.filter(function(l){return !l.ok&&QB[l.id].o});
+  return '<div class="card"><h3>'+c.title+': keputusan</h3><div class="score"><div class="big">'+z.ok+'/'+n+'</div><div><p><b>'+msg+'</b></p><div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+pct+'"><i style="width:'+pct+'%"></i></div><p class="small muted" style="margin-top:6px">'+pct+'% betul</p></div></div>'+
+   (good.length?'<p style="margin-top:14px"><b>Kekuatan anda</b></p><div class="kw">'+good.map(function(k){return '<span class="chip ok">'+ic('check')+' '+TAGS[k]+'</span>'}).join('')+'</div>':'')+
+   (weak.length?'<p style="margin-top:14px"><b>Boleh dipertingkatkan</b></p><div class="kw">'+weak.map(function(k){return '<span class="chip sun">'+TAGS[k]+'</span>'}).join('')+'</div>':'')+
+   (wrong.length?'<p style="margin-top:14px"><b>Belajar daripada jawapan yang belum tepat</b></p><ul class="review">'+wrong.map(function(l){var q=QB[l.id];return '<li><div>'+q.q+'</div><div style="margin-top:6px"><b>Jawapan betul:</b> '+q.o[q.a]+'</div><div class="small muted" style="margin-top:4px">'+q.e+'</div></li>'}).join('')+'</ul>':'')+
+   '<div class="row" style="margin-top:18px"><button class="btn" data-a="qz-again" data-id="'+z.id+'">'+ic('replay')+' Cuba lagi</button></div></div>'}
+function qzNext(z){z.i++;z.st='ask';z.tries=0;z.dis=[];z.hintOn=false;z.msg='';z.pick=null;z.good=false;
+  if(z.i>=z.qids.length){z.st='sum';if(!z.fin){z.fin=true;QC[z.id].onDone(z)}}}
+
+/* ---------- Teroka ---------- */
+var VID={i:0,t:0,play:false,asked:{},q:null,tm:null};
+var SC_MS=7000;
+function vidDraw(){
+  var el=$('#vid');if(!el)return;var s=SC[VID.i],run=VID.play&&!VID.q&&s.b;
+  var h='<div class="stage"><p class="assure">Babak '+(VID.i+1)+' / '+SC.length+'</p><h3>'+s.t+'</h3><div>'+s.w.map(function(w){return '<span class="ar">'+w+'</span>'}).join('')+'</div>';
+  if(s.b)h+='<div class="'+(run?'run':'')+'" style="max-width:360px;margin:0 auto"><div class="beats"><span class="beat"></span><span class="beat"></span></div><div class="beatlab"><span>1</span><span>2</span></div></div>';
+  h+='<p style="margin-top:12px;font-size:1.1rem">'+s.x+'</p><div class="vbar" aria-hidden="true"><i id="vbar" style="width:'+Math.min(100,VID.t/SC_MS*100)+'%"></i></div>';
+  if(VID.q){var q=SC[VID.q.i].q;
+    h+='<div class="panel" style="text-align:left"><p><b>Jeda dan fikir.</b> '+esc(q.q)+'</p>'+q.o.map(function(o,k){var cl='',dis=VID.q.k!==null;
+      if(dis){if(k===q.a)cl=' ok';else if(k===VID.q.k)cl=' bad'}
+      return '<button class="opt'+cl+'" data-a="vid-ans" data-k="'+k+'"'+(dis?' disabled':'')+'><span class="ol">'+'ABC'.charAt(k)+'</span><span>'+esc(o)+'</span></button>'}).join('')+
+      (VID.q.k!==null?'<div class="fb '+(VID.q.k===q.a?'ok':'bad')+'" role="status">'+esc(q.e)+'</div><button class="btn sun" data-a="vid-cont">Teruskan video</button>':'')+'</div>';
+  }else{
+    h+='<div class="row" style="justify-content:center"><button class="btn" data-a="vid-toggle" data-fk="vt">'+(VID.play?ic('pause')+' Jeda':ic('play')+' Main')+'</button><button class="btn ghost" data-a="vid-restart">'+ic('replay')+' Ulang</button></div>';
+  }
+  h+='<div class="dots" style="margin-top:14px" role="group" aria-label="Pilih babak">'+SC.map(function(_,i){return '<button class="dot" data-a="vid-go" data-v="'+i+'"'+(i===VID.i?' aria-current="true"':'')+' aria-label="Babak '+(i+1)+'">'+(i+1)+'</button>'}).join('')+'</div></div>';
+  el.innerHTML=h;
+}
+function vidStop(){VID.play=false;if(VID.tm){clearInterval(VID.tm);VID.tm=null}}
+function vidTick(){
+  if(!VID.play||VID.q)return;VID.t+=100;var b=$('#vbar');if(b)b.style.width=Math.min(100,VID.t/SC_MS*100)+'%';
+  if(VID.t>=SC_MS){var s=SC[VID.i];
+    if(s.q&&!VID.asked[VID.i]){vidStop();VID.q={i:VID.i,k:null};vidDraw();return}
+    vidAdvance()}
+}
+function vidAdvance(){
+  if(VID.i<SC.length-1){VID.i++;VID.t=0;vidDraw()}else{vidStop();VID.t=SC_MS;vidDraw()}
+}
+function vidStart(){if(VID.tm)clearInterval(VID.tm);VID.play=true;VID.tm=setInterval(vidTick,100)}
+var AUD={cur:-1,st:'idle'};
+var hasTTS=function(){return 'speechSynthesis' in window&&'SpeechSynthesisUtterance' in window};
+function audDraw(){
+  var el=$('#aud');if(!el)return;
+  el.innerHTML=(hasTTS()?'':'<div class="fb bad">Peranti ini tidak menyokong suara naratif. Sila baca transkrip di bawah.</div>')+
+   '<div class="stack">'+AT.map(function(a,i){var on=AUD.cur===i,pl=on&&AUD.st==='play',pa=on&&AUD.st==='pause';
+    return '<div class="card"><div class="row" style="justify-content:space-between"><h3 style="margin:0">'+(i+1)+'. '+a.t+'</h3><div class="row">'+
+     '<button class="btn" data-a="'+(pl?'aud-pause':(pa?'aud-resume':'aud-play'))+'" data-v="'+i+'" data-fk="au'+i+'"'+(hasTTS()?'':' disabled')+'>'+(pl?ic('pause')+' Jeda':(pa?ic('play')+' Sambung':ic('vol')+' Dengar'))+'</button>'+
+     '<button class="btn ghost" data-a="aud-replay" data-v="'+i+'"'+(hasTTS()?'':' disabled')+'>'+ic('replay')+' Ulang</button></div></div>'+
+     '<p style="margin:10px 0 0"><span class="small muted">Transkrip:</span> '+a.s+'</p></div>'}).join('')+'</div>'+
+   '<p class="small muted" style="margin-top:12px">Suara ini dijana oleh peranti anda, bukan bacaan al-Quran. Untuk bacaan yang betul, dengar bimbingan guru.</p>'}
+function audSpeak(i){
+  if(!hasTTS())return;window.speechSynthesis.cancel();
+  var u=new SpeechSynthesisUtterance(AT[i].s);u.lang='ms-MY';u.rate=.9;
+  var vs=window.speechSynthesis.getVoices()||[],v=vs.filter(function(x){return /^ms/i.test(x.lang)})[0]||vs.filter(function(x){return /^id/i.test(x.lang)})[0];if(v)u.voice=v;
+  u.onend=function(){if(AUD.cur===i){AUD.st='idle';audDraw()}};u.onerror=function(){AUD.st='idle';audDraw()};
+  AUD.cur=i;AUD.st='play';window.speechSynthesis.speak(u);
+  if(!S.teroka.audio){S.teroka.audio=true;award('t-audio',5)}
+  audDraw();
+}
+function fcDraw(){
+  var el=$('#fc');if(!el)return;var i=UI.fc,c=FC[i],seen=Object.keys(S.flash).length;
+  el.innerHTML='<div class="fc" id="fcard"><div class="fc-in"><button class="fc-face" data-a="fc-flip" data-fk="fcf" aria-label="Kad '+(i+1)+'. Tekan untuk lihat jawapan">'+c[0]+'</button><button class="fc-face fc-back" data-a="fc-flip" tabindex="-1" aria-hidden="true">'+c[1]+'</button></div></div>'+
+   '<div class="row" style="justify-content:center;margin-top:14px"><button class="btn ghost" data-a="fc-go" data-v="-1">'+ic('back')+' Sebelum</button><span class="chip">Kad '+(i+1)+' / '+FC.length+'</span><button class="btn ghost" data-a="fc-go" data-v="1">Seterusnya '+ic('arrow')+'</button></div>'+
+   '<p class="center small muted" id="fcprog" style="margin-top:10px">Kad dibalik: '+seen+' / '+FC.length+'</p>';
+}
+function pNota(){
+  return NOTES.map(function(n,i){var o=UI.no===i;
+   return '<div class="acc"><button data-a="note" data-v="'+i+'" data-fk="nt'+i+'" aria-expanded="'+o+'"><span>'+n.h+(S.notes[i]?' <span class="chip ok">'+ic('check')+'</span>':'')+'</span>'+ic(o?'up':'down')+'</button>'+
+   (o?'<div class="body">'+(n.b?'<p>'+n.b+'</p>':'')+(n.eg?'<div class="eg">'+n.eg.map(function(e){return ar(e[0])+'<span><b>'+e[1]+'</b><br><span class="small muted">'+e[2]+'</span></span>'}).join('')+'</div>':'')+
+   (n.kw?'<div class="kw">'+n.kw.map(function(k){return '<span class="chip sun">'+k+'</span>'}).join('')+'</div>':'')+'</div>':'')+'</div>'}).join('')+
+   '<p class="small muted" style="margin-top:10px">Buka kelima-lima kad nota untuk menandakan bahagian ini selesai ('+Object.keys(S.notes).length+' / '+NOTES.length+').</p>'}
+function pInfo(){
+  var s=ISTEP[UI.is],parts=['قَ','ا','لَ'];
+  return '<div class="steps" role="group" aria-label="Langkah">'+ISTEP.map(function(t,i){return '<button class="pick" aria-pressed="'+(i===UI.is)+'" data-a="info-go" data-v="'+i+'">Langkah '+(i+1)+'</button>'}).join('')+'</div>'+
+   '<div class="card"><h3>'+s.h+'</h3><div class="wordbig" aria-label="Perkataan qaala">'+parts.map(function(p,i){return '<span class="'+(s.hl.indexOf(i)>=0?'hl':'')+'">'+p+'</span>'}).join('')+'</div>'+
+   (s.beats?'<div class="run" style="max-width:320px;margin:0 auto"><div class="beats"><span class="beat"></span><span class="beat"></span></div><div class="beatlab"><span>1</span><span>2</span></div></div>':'')+
+   '<p style="margin-top:10px">'+s.t+'</p><div class="row"><button class="btn ghost" data-a="info-go" data-v="'+Math.max(0,UI.is-1)+'"'+(UI.is===0?' disabled':'')+'>'+ic('back')+' Sebelum</button><button class="btn" data-a="info-go" data-v="'+Math.min(3,UI.is+1)+'"'+(UI.is===3?' disabled':'')+'>Seterusnya '+ic('arrow')+'</button></div></div>'+
+   '<h3 style="margin-top:22px">Peta konsep</h3>'+
+   '<div class="card"><svg class="map" viewBox="0 0 640 320" role="img" aria-label="Peta konsep. Mad Asli dibaca 2 harakat. Ada tiga huruf mad: alif selepas baris atas, wau mati selepas baris depan, ya mati selepas baris bawah.">'+
+   '<g class="ln"><path d="M320 80 L110 160"/><path d="M320 80 L320 160"/><path d="M320 80 L530 160"/></g>'+
+   '<rect class="n0" x="190" y="14" width="260" height="66" rx="18"/><text class="t0" x="320" y="44" text-anchor="middle">Mad Asli</text><text class="t0b" x="320" y="67" text-anchor="middle">dibaca 2 harakat</text>'+
+   [['ا','Alif','selepas baris atas','قَالَ',15],['و','Wau mati','selepas baris depan','يَقُولُ',225],['ي','Ya mati','selepas baris bawah','قِيلَ',435]].map(function(c){var cx=c[4]+95;
+     return '<rect class="n1" x="'+c[4]+'" y="160" width="190" height="144" rx="18"/><text class="ta" x="'+cx+'" y="204" text-anchor="middle">'+c[0]+'</text><text class="tb" x="'+cx+'" y="230" text-anchor="middle">'+c[1]+'</text><text class="tx" x="'+cx+'" y="252" text-anchor="middle">'+c[2]+'</text><text class="ta2" x="'+cx+'" y="288" text-anchor="middle">'+c[3]+'</text>'}).join('')+
+   '</svg></div>'}
+function pVideo(){
+  return '<div id="vid"></div>'+(CONFIG.VIDEO_URL?'<p style="margin-top:12px"><a class="btn ghost" href="'+esc(CONFIG.VIDEO_URL)+'" target="_blank" rel="noopener">Tonton video tambahan daripada guru</a></p>':'<p class="small muted" style="margin-top:12px">Video animasi ini dibina dalam laman ini. Guru boleh menambah pautan video tambahan dalam tetapan CONFIG.VIDEO_URL. Pautan itu belum ditetapkan.</p>')+
+   '<p class="small muted">Jawab dua soalan jeda dan fikir untuk menandakan bahagian ini selesai.</p>'}
+function pAudio(){return '<div id="aud"></div>'}
+function pFlash(){return '<div id="fc"></div>'}
+
+/* ---------- Alami ---------- */
+var MT=null;
+function mtInit(){MT={order:shuffle(MP.map(function(_,i){return i})),placed:{},sel:null,miss:0,msg:'Seret konsep ke definisi yang betul. Di telefon, ketik konsep kemudian ketik definisi.'}}
+function mtDraw(){
+  if(!MT)mtInit();var el=$('#mt');if(!el)return;var np=Object.keys(MT.placed).length;
+  var pool=MP.map(function(m,i){return MT.placed[i]===undefined?'<button class="chipd" draggable="true" data-a="mt-chip" data-c="'+i+'" aria-pressed="'+(MT.sel===i)+'">'+m[0]+'</button>':''}).join('');
+  el.innerHTML='<div class="mg"><div><h3>Konsep</h3>'+(pool||'<p class="muted">Semua konsep telah dipadankan.</p>')+'</div><div><h3>Definisi</h3>'+
+   MT.order.map(function(i){var d=MT.placed[i]!==undefined;return '<button class="slot'+(d?' done':'')+'" data-a="mt-slot" data-s="'+i+'"'+(d?' disabled':'')+'>'+(d?'<b>'+ic('check')+' '+MP[i][0]+'</b> <span>'+MP[i][1]+'</span>':'<span>'+MP[i][1]+'</span>')+'</button>'}).join('')+'</div></div>'+
+   '<div class="fb '+(np===MP.length?'ok':'hint')+'" role="status">'+(np===MP.length?'<b>Syabas!</b> Anda memadankan semua konsep dengan '+MT.miss+' kesilapan.':MT.msg)+'</div>'+
+   '<div class="row"><span class="chip">'+np+' / '+MP.length+' dipadankan</span><button class="btn ghost" data-a="mt-reset">'+ic('replay')+' Main semula</button></div>';
+}
+function mtTry(c,s){
+  if(c===null||c===undefined)return;
+  if(c===s){MT.placed[s]=c;MT.sel=null;MT.msg='Betul!';var n=Object.keys(MT.placed).length;
+    if(n===MP.length){S.act.match=true;award('match',25+(MT.miss<=2?10:0))}else award('match',n*5)}
+  else{MT.miss++;MT.sel=null;MT.msg='Belum tepat, tidak mengapa. Baca definisi sekali lagi dan cuba lagi.'}
+  mtDraw();save();
+}
+function gpHtml(){
+  var L=lvl(),p=total();
+  return '<div class="card" style="margin-top:20px"><h3>Pusat Pencapaian</h3><div class="row" style="justify-content:space-between"><span class="chip sun">Tahap: '+esc(L.name)+'</span><span class="chip">'+p+' mata</span></div>'+
+   '<p class="small muted" style="margin:10px 0 4px">'+(L.next?'Teruskan sehingga '+L.next+' mata untuk tahap seterusnya.':'Anda berada di tahap tertinggi.')+'</p><div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+L.pct+'"><i style="width:'+L.pct+'%"></i></div>'+
+   '<h3 style="margin-top:18px">Lencana</h3><div class="badges">'+BADGES.map(function(b){var on=b.f();return '<div class="bd'+(on?' on':'')+'"><span class="ico">'+ic(on?'star':'lock')+'</span><b>'+b.n+'</b><small>'+b.d+'</small></div>'}).join('')+'</div>'+
+   '<h3 style="margin-top:18px">Misi pembelajaran</h3><div class="kw">'+learnMods().map(function(m){var d=isDone[m.id]();return '<a class="chip '+(d?'ok':'')+'" href="#'+m.id+'">'+(d?ic('check')+' ':'')+m.t+'</a>'}).join('')+'</div></div>'}
+var RC=null;
+function rcClear(){if(RC&&RC.tm){clearInterval(RC.tm);RC.tm=null}}
+function rcDraw(){
+  var el=$('#rc');if(!el)return;
+  if(!RC){el.innerHTML='<div class="panel"><h3>Cabaran Kilat</h3><p>Enam soalan betul atau salah. Setiap soalan ada 12 saat. Jawapan betul berturut-turut memberi mata bonus. Tidak mengapa jika terlepas.</p><button class="btn sun" data-a="rc-start">Mula Cabaran Kilat</button>'+(S.rapid?'<p class="muted small" style="margin-top:10px">Terbaik: '+S.rapid.right+' / 6 betul, '+S.rapid.pts+' mata.</p>':'')+'</div>'+gpHtml();return}
+  if(RC.st==='end'){el.innerHTML='<div class="card"><h3>Cabaran Kilat selesai</h3><div class="score"><div class="big">'+RC.right+'/6</div><div><p><b>'+(RC.right>=5?'Hebat! Anda pantas dan tepat.':RC.right>=3?'Bagus! Cuba lagi untuk lebih pantas.':'Usaha yang baik! Baca nota dan cuba lagi.')+'</b></p><p class="muted">Anda mendapat '+RC.pts+' mata dalam pusingan ini.</p></div></div><div class="row" style="margin-top:14px"><button class="btn" data-a="rc-start">'+ic('replay')+' Main lagi</button></div></div>'+gpHtml();return}
+  var q=RQ[RC.i];
+  el.innerHTML='<div class="card"><div class="qh"><span class="chip">Soalan '+(RC.i+1)+' / 6</span><span class="chip sun">Bonus '+(RC.streak>=2?'aktif':'selepas 2 betul')+'</span><span class="chip">'+RC.pts+' mata</span></div>'+
+   '<div class="tmr" aria-hidden="true"><i id="tbar" style="width:'+(RC.left/12*100)+'%"></i></div><p class="qtext">'+q.q+'</p>'+
+   (RC.st==='ask'?'<div class="row"><button class="btn" data-a="rc-ans" data-v="1">Betul</button><button class="btn ghost" data-a="rc-ans" data-v="0">Salah</button><span class="chip" id="tleft">'+RC.left+' saat</span></div>':
+   '<div class="fb '+(RC.ok?'ok':'bad')+'" role="status"><b>'+(RC.ok?'Betul!':(RC.to?'Masa tamat.':'Hampir!'))+'</b> '+q.e+'</div><button class="btn sun" data-a="rc-next" data-fk="rcn">'+(RC.i>=5?'Lihat keputusan':'Seterusnya')+' '+ic('arrow')+'</button>')+'</div>'+gpHtml();
+  if(RC.st==='fb'){var b=$('[data-fk="rcn"]',el);if(b)b.focus({preventScroll:true})}
+}
+function rcAsk(){rcClear();RC.st='ask';RC.left=12;RC.tm=setInterval(function(){RC.left--;var b=$('#tbar'),t=$('#tleft');if(b)b.style.width=Math.max(0,RC.left/12*100)+'%';if(t)t.textContent=RC.left+' saat';if(RC.left<=0)rcAnswer(null)},1000);rcDraw()}
+function rcAnswer(v){
+  if(!RC||RC.st!=='ask')return;rcClear();var q=RQ[RC.i];RC.to=(v===null);RC.ok=(v!==null)&&((v===1)===q.a);
+  if(RC.ok){RC.pts+=10+(RC.streak>=2?5:0);RC.streak++;RC.right++}else RC.streak=0;
+  RC.st='fb';rcDraw();
+}
+function rcNext(){
+  if(RC.i<5){RC.i++;rcAsk()}else{RC.st='end';rcClear();
+    if(!S.rapid||RC.pts>S.rapid.pts||RC.right>S.rapid.right)S.rapid={right:Math.max(RC.right,S.rapid?S.rapid.right:0),pts:Math.max(RC.pts,S.rapid?S.rapid.pts:0)};
+    S.act.rapid=true;award('rapid',S.rapid.pts);rcDraw()}
+}
+
+/* ---------- Cikgu AI (berasaskan peraturan) ---------- */
+var CHAT=[],PEND=null,USED=[],HINTI=0;
+var GEN_HINTS=['Cari dahulu alif, wau atau ya dalam perkataan itu.','Semak baris huruf sebelumnya: atas untuk alif, depan untuk wau, bawah untuk ya.','Lihat huruf selepas huruf mad. Ada hamzah atau sukun? Jika ada, ia bukan Mad Asli.','Jika semua syarat cukup, bacalah 2 ketukan.'];
+function norm(s){return s.toLowerCase().replace(/[^a-z0-9\s'’]/g,' ').replace(/\s+/g,' ').trim()}
+function has(t,list){return list.some(function(w){return t.indexOf(w)>=0})}
+var THINK='<br><em>Cuba fikir:</em> ';
+function botReply(raw){
+  var t=norm(raw);
+  if(/\d{6,}|@|https?:/.test(raw)||has(t,['alamat rumah','nombor telefon','no telefon','nama penuh','kad pengenalan','kata laluan','password','rumah saya di'])){
+    return {h:'Jangan kongsi maklumat peribadi seperti nama penuh, alamat atau nombor telefon di sini. Mari kita teruskan belajar tentang Mad Asli. Anda mahu tahu tentang apa?'}}
+  if(has(t,['soalan','latihan','kuiz','quiz','uji saya'])){
+    var pool=Object.keys(QB).filter(function(k){return /^q\d+$/.test(k)&&USED.indexOf(k)<0});if(!pool.length){USED=[];pool=Object.keys(QB).filter(function(k){return /^q\d+$/.test(k)})}
+    var id=pool[Math.floor(Math.random()*pool.length)];USED.push(id);PEND={id:id,tries:0};var q=QB[id];
+    return {h:'Cuba soalan ini:<br><b>'+q.q+'</b>',opts:q.o,qid:id}}
+  if(has(t,['petunjuk','hint','tolong','bantu','tak tahu','tidak tahu'])){
+    if(PEND){return {h:'<b>Petunjuk:</b> '+TAGHINT[QB[PEND.id].t]+THINK+'apa yang anda perhatikan dahulu dalam soalan itu?'}}
+    var h=GEN_HINTS[HINTI%GEN_HINTS.length];HINTI++;return {h:'<b>Petunjuk '+(((HINTI-1)%GEN_HINTS.length)+1)+':</b> '+h+THINK+'adakah anda boleh cuba sendiri dahulu?'}}
+  if(has(t,['terima kasih','thanks','tq'])){return {h:'Sama-sama! Teruskan berusaha. Jika ada yang tidak jelas, tanya cikgu anda juga.'}}
+  if(/\b(hai|hello|hi|salam|assalamualaikum|selamat pagi|selamat petang)\b/.test(t)){return {h:'Waalaikumussalam! Saya Cikgu AI. Saya boleh membantu tentang Hukum Mad Asli. Anda mahu tanya apa?'}}
+  if(has(t,['hamzah','sukun','sabdu','tasydid','bukan mad asli','jaa','جاء'])){return {h:'Jika selepas huruf mad ada <b>hamzah</b> atau <b>sukun</b> (termasuk huruf bertasydid), bacaannya bukan lagi Mad Asli. Contoh: '+ar('جَاءَ')+' ada hamzah selepas alif. Ia mad jenis lain.'+THINK+'mengapakah Mad Asli tidak boleh ada hamzah selepas huruf mad?'}}
+  if(has(t,['huruf','alif','wau','ya mati','baris'])){return {h:'Ada tiga huruf mad:<br>• Alif selepas baris atas, contoh '+ar('قَالَ')+'<br>• Wau mati selepas baris depan, contoh '+ar('يَقُولُ')+'<br>• Ya mati selepas baris bawah, contoh '+ar('قِيلَ')+THINK+'bolehkah wau mati selepas baris atas menjadi huruf mad?'}}
+  if(has(t,['harakat','ketukan','berapa panjang','berapa lama'])){return {h:'Mad Asli dibaca <b>2 harakat</b>. Satu harakat lebih kurang satu ketukan jari, jadi dua ketukan: satu, dua. Tidak lebih dan tidak kurang.'+THINK+'apa yang berlaku jika kita baca 6 ketukan?'}}
+  if(has(t,['contoh'])){return {h:'Tiga contoh Mad Asli:<br>'+ar('قَالَ')+' (qaa-la)<br>'+ar('يَقُولُ')+' (ya-quu-lu)<br>'+ar('قِيلَ')+' (qii-la)<br>Semuanya dibaca 2 ketukan pada huruf mad.'+THINK+'cuba kenal pasti huruf mad dalam setiap perkataan.'}}
+  if(has(t,['mudah','senang','ringkas','faham','terangkan','jelaskan'])){return {h:'Cara mudah: <b>ketuk meja dua kali</b> semasa menyebut bunyi panjang. Jika ada alif selepas baris atas, wau mati selepas baris depan atau ya mati selepas baris bawah, panjangkan bunyi itu dua ketukan sahaja.'+THINK+'bolehkah anda ketuk dua kali sambil menyebut “qaa”?'}}
+  if(has(t,['thabi','nama lain'])){return {h:'Mad Asli juga dipanggil <b>Mad Thabi\'i</b>.'+THINK+'mengapakah agaknya ia dipanggil “asli”?'}}
+  if(has(t,['mengapa','kenapa','sebab'])){return {h:'Soalan yang baik! Mad Asli dipanggil “asli” kerana panjangnya tetap 2 harakat dan tidak bergantung pada sebab lain seperti hamzah atau sukun.'+THINK+'jika ada hamzah selepas huruf mad, apa yang berubah?'}}
+  if(has(t,['mad','asli','tajwid'])){return {h:'Mad Asli ialah bacaan yang dipanjangkan <b>2 harakat</b> (2 ketukan). Ia berlaku bila ada huruf mad (alif, wau mati atau ya mati) dan tiada hamzah atau sukun selepasnya.'+THINK+'dapatkah anda sebut tiga huruf mad?'}}
+  return {h:'Saya hanya boleh membantu tentang Hukum Mad Asli. Untuk topik lain, sila tanya cikgu anda. Cuba tekan salah satu butang cadangan di atas.'}
+}
+function chatPush(who,html,extra){CHAT.push({w:who,h:html,x:extra||null});chatDraw()}
+function chatDraw(){
+  var el=$('#chatlog');if(!el)return;
+  el.innerHTML=CHAT.map(function(m){
+    if(m.w==='me')return '<div class="msg me">'+m.h+'</div>';
+    return '<div class="msg">'+m.h+(m.x&&m.x.opts?'<div style="margin-top:10px">'+m.x.opts.map(function(o,k){return '<button class="opt" data-a="chat-pick" data-q="'+m.x.qid+'" data-k="'+k+'"><span class="ol">'+'ABCD'.charAt(k)+'</span><span>'+o+'</span></button>'}).join('')+'</div>':'')+'<span class="src">Cikgu AI (mod peraturan). Semak dengan guru.</span></div>'}).join('');
+  el.scrollTop=el.scrollHeight;
+}
+function chatSend(text){
+  text=(text||'').trim();if(!text)return;
+  if(text.length>200)text=text.slice(0,200);
+  var r=botReply(text);var safe=r.h.indexOf('Jangan kongsi maklumat peribadi')===0;
+  CHAT.push({w:'me',h:safe?'<em>(mesej tidak dipaparkan kerana mungkin mengandungi maklumat peribadi)</em>':esc(text)});
+  S.asked++;save();award('ai',10);
+  chatPush('bot',r.h,r.opts?{opts:r.opts,qid:r.qid}:null);
+}
+
+/* ---------- paparan ---------- */
+var VIEWS={};
+VIEWS.utama={
+ html:function(){
+  var dc=doneCount(),p=S.profile,rec=recPath(),pn=PATHS.filter(function(x){return x.id===rec})[0].n;
+  function grp(key,label,list){return '<fieldset style="border:0;padding:0;margin:0 0 16px"><legend><b>'+label+'</b></legend><div class="opts" style="margin-top:8px">'+list.map(function(o){return '<button class="pick" data-a="prof" data-k="'+key+'" data-v="'+o[0]+'" aria-pressed="'+(p[key]===o[0])+'">'+o[1]+'</button>'}).join('')+'</div></fieldset>'}
+  var pref=p.pref==='video'?'Mulakan dengan tab Video dalam Teroka.':p.pref==='game'?'Mulakan dengan kad imbas dalam Teroka, kemudian cuba permainan dalam Alami.':p.pref==='baca'?'Mulakan dengan tab Nota dalam Teroka.':'';
+  return '<section class="hero"><div><p class="eyebrow">Pendidikan Islam · Tahun 5 · Hukum Mad Asli</p><h1>Selamat datang ke EDUVERSE 21</h1><p class="tagline">Explore. Experience. Engage. Excel.</p>'+
+   '<p class="msg-box"><b>Selamat datang, peneroka ilmu!</b> Bersedia untuk meneroka, mencuba dan menguasai ilmu melalui pengalaman pembelajaran digital yang menyeronokkan?</p>'+
+   '<p>Hari ini kita belajar cara memanjangkan bunyi dalam al-Quran sebanyak 2 harakat dengan betul: <b>Hukum Mad Asli</b>.</p>'+
+   '<div class="row"><a class="btn sun" href="#objektif" data-a="start">Mula Pembelajaran '+ic('arrow')+'</a><span class="chip">Anggaran masa: 45 hingga 60 minit</span></div>'+
+   '<p class="bigidea" style="margin-top:14px">Generasi Digital Pemacu Pedagogi Kontemporari Abad ke-21.</p></div>'+
+   '<div class="beatcard" role="img" aria-label="Perkataan qaala dengan dua ketukan"><span class="ar">قَالَ</span><div class="run"><div class="beats"><span class="beat"></span><span class="beat"></span></div><div class="beatlab"><span>1</span><span>2</span></div></div><p style="margin:12px 0 0"><b>2 harakat = 2 ketukan</b></p></div></section>'+
+   '<div class="card"><div class="row" style="justify-content:space-between"><h2 style="margin:0">Kemajuan anda</h2><span class="chip '+(dc===8?'ok':'')+'">'+dc+' / 8 modul selesai</span></div>'+
+   '<div class="bar" style="margin-top:12px" role="progressbar" aria-valuemin="0" aria-valuemax="8" aria-valuenow="'+dc+'"><i style="width:'+(dc/8*100)+'%"></i></div></div>'+
+   '<h2 style="margin-top:28px">Objektif ringkas</h2><div class="grid3">'+OBJ.map(function(o){return '<div class="card"><span class="assure">'+o.k+'</span><p style="margin:0">…'+o.t+'</p></div>'}).join('')+'</div>'+
+   '<h2 style="margin-top:28px">Perjalanan pembelajaran</h2><ol class="journey">'+learnMods().concat([MODS[8]]).map(function(m,i){var d=m.id!=='tamat'&&isDone[m.id]();return '<li class="'+(d?'done':'')+'"><a href="#'+m.id+'"><span class="n">'+(d?ic('check'):(i+1))+'</span><span><b>'+m.t+'</b><span class="d">'+JD[m.id]+'</span></span></a></li>'}).join('')+'</ol>'+
+   '<div class="card" style="margin-top:28px"><span class="assure">ASSURE · Analyze Learners</span><h2>Kenali diri anda</h2><p class="muted">Tiga soalan ini membantu kami mencadangkan laluan yang sesuai. Tiada jawapan salah.</p>'+
+   grp('prior','Adakah anda pernah belajar tentang mad?',[['none','Belum pernah'],['some','Sedikit'],['good','Sudah biasa']])+
+   grp('digital','Adakah anda selesa menggunakan tablet atau komputer?',[['low','Perlu bantuan'],['ok','Boleh'],['high','Sangat selesa']])+
+   grp('pref','Saya paling suka belajar dengan…',[['video','Menonton video'],['game','Bermain permainan'],['baca','Membaca nota']])+
+   (p.prior||p.pref?'<div class="fb ok" role="status"><b>Cadangan untuk anda.</b> Laluan '+pn+' dalam modul Aplikasi. '+pref+'</div>':'')+'</div>'},
+};
+VIEWS.objektif={
+ html:function(){
+  return '<div class="grid3">'+OBJ.map(function(o,i){var op=UI['ob'+i],d=S.obj[i];
+   return '<div class="card"><span class="assure">'+o.k+'</span><p><b>…'+o.t+'</b></p>'+
+   '<button class="btn ghost" data-a="obj-open" data-v="'+i+'" aria-expanded="'+!!op+'" data-fk="ob'+i+'">'+(op?'Sembunyi':'Bagaimana saya tahu?')+'</button>'+
+   (op?'<div class="fb hint" style="margin-top:12px"><b>Bukti kejayaan:</b> '+o.c+'</div>':'')+
+   '<div style="margin-top:12px">'+(d?'<span class="chip ok">'+ic('check')+' Saya faham</span>':'<button class="btn" data-a="obj-ok" data-v="'+i+'">Saya faham</button>')+'</div></div>'}).join('')+'</div>'+
+   '<div class="card" style="margin-top:20px"><h3>Pautan kepada kurikulum</h3><p>Rujukan: Pendidikan Islam Tahun 5, bidang Tilawah al-Quran, topik Hukum Mad Asli.</p>'+
+   '<p class="small muted" style="margin:0">Kod Standard Kandungan dan Standard Pembelajaran perlu dipadankan oleh guru dengan DSKP semasa. Kod tersebut sengaja tidak dicipta di sini.</p></div>'}
+};
+VIEWS.teroka={
+ html:function(){
+  if(!UI.tk)UI.tk=({video:'video',game:'flash',baca:'nota'})[S.profile.pref]||'nota';
+  var body={nota:pNota,info:pInfo,video:pVideo,audio:pAudio,flash:pFlash}[UI.tk]();
+  return tabs('tk',TK.map(function(k){return [k,TKN[k]]}),UI.tk,function(k){return S.teroka[k]})+'<div>'+body+'</div>'},
+ init:function(){
+  if(UI.tk==='video'){vidDraw();cleanups.push(vidStop)}
+  if(UI.tk==='audio'){if(!hasTTS()&&!S.teroka.audio){S.teroka.audio=true;award('t-audio',5)}audDraw();cleanups.push(function(){if(hasTTS()){window.speechSynthesis.cancel()}AUD.st='idle'})}
+  if(UI.tk==='flash')fcDraw();
+ }
+};
+VIEWS.alami={
+ html:function(){
+  var panel={A:'<div id="mt"></div>',B:'<div id="qz-b"></div>',C:'<div id="qz-m"></div>',D:'<div id="rc"></div>'}[UI.al];
+  return tabs('al',[['A','A. Padankan'],['B','B. Kuiz'],['C','C. Misi'],['D','D. Cabaran']],UI.al,function(k){return S.act[{A:'match',B:'quiz',C:'mission',D:'rapid'}[k]]})+panel},
+ init:function(){
+  if(UI.al==='A')mtDraw();if(UI.al==='B')qzDraw('b');if(UI.al==='C')qzDraw('m');if(UI.al==='D'){rcDraw();cleanups.push(rcClear)}}
+};
+VIEWS.aplikasi={
+ html:function(){
+  var rec=recPath(),sel=S.pathway;
+  var cards='<div class="grid3">'+PATHS.map(function(p,i){return '<button class="card" style="text-align:left;font:inherit;color:inherit;cursor:pointer;border:2px solid '+(sel===p.id?'var(--brand)':'var(--line)')+'" data-a="path" data-v="'+p.id+'" aria-pressed="'+(sel===p.id)+'"><span class="assure">Laluan '+(i+1)+'</span><h3>'+p.n+'</h3><p class="muted" style="margin:0">'+p.d+'</p>'+(rec===p.id?'<span class="chip sun" style="margin-top:10px">Dicadangkan</span>':'')+(S.path[p.id]?' <span class="chip ok" style="margin-top:10px">'+ic('check')+' Selesai</span>':'')+'</button>'}).join('')+'</div>';
+  var rn=PATHS.filter(function(x){return x.id===rec})[0].n,why=S.assess.pra?'berdasarkan Pra-Penilaian anda':(S.profile.prior?'berdasarkan jawapan anda di halaman utama':'sebagai permulaan');
+  var intro='<p class="muted" style="margin-top:14px">Laluan '+rn+' dicadangkan '+why+'. Anda bebas memilih laluan lain.</p>';
+  var body='';
+  if(sel==='b')body='<div class="card" style="margin-top:18px"><h3>Penerangan mudah</h3><p>Mad Asli ialah bunyi panjang yang dikira <b>dua ketukan</b>. Tekan butang dan ketuk meja bersama bunyi.</p><div id="demo" style="max-width:340px;margin:12px 0"><div class="beats"><span class="beat"></span><span class="beat"></span></div><div class="beatlab"><span>1</span><span>2</span></div></div><button class="btn ghost" data-a="demo">'+ic('play')+' Lihat dua ketukan</button>'+
+    '<h3 style="margin-top:18px">Contoh berpandu</h3><div class="row">'+ar('قَالَ')+'<span>→ alif selepas baris atas → “qaa” 2 ketukan → “la”</span></div></div>';
+  if(sel==='i')body='<div class="card" style="margin-top:18px"><h3>Penyelesaian berpandu</h3><ol style="margin:0;padding-left:20px"><li>Cari alif, wau atau ya.</li><li>Semak baris huruf sebelumnya.</li><li>Semak sama ada ada hamzah atau sukun selepasnya.</li><li>Jika semua syarat cukup, baca 2 ketukan.</li></ol></div>';
+  if(sel==='a')body='<div class="card" style="margin-top:18px"><h3>Situasi sebenar</h3><p style="margin:0">Anda membantu adik membaca al-Quran. Anda mendengar dia memendekkan sebahagian bunyi mad dan memanjangkan yang lain tanpa sebab. Bagaimana anda membimbingnya dengan lembut dan jelas?</p></div>';
+  return cards+intro+body+(sel?'<div id="qz-'+PQ[sel]+'" style="margin-top:18px"></div>':'<div class="panel" style="margin-top:18px"><p style="margin:0">Pilih satu laluan di atas untuk melihat latihan anda.</p></div>')},
+ init:function(){if(S.pathway)qzDraw(PQ[S.pathway])}
+};
+VIEWS['cikgu-ai']={
+ html:function(){
+  return '<div class="notice" role="note"><b>Cikgu AI ialah chatbot berasaskan peraturan, bukan model AI sebenar.</b> Jawapannya telah ditetapkan dan terhad kepada Hukum Mad Asli. Semak jawapan dengan guru anda. Jangan taip nama penuh, alamat atau nombor telefon. Perbualan tidak disimpan.</div>'+
+   '<div class="opts" style="margin-block:14px">'+['Apa itu Mad Asli?','Sebut tiga huruf mad','Beri contoh','Terangkan dengan mudah','Beri petunjuk','Beri soalan latihan'].map(function(c){return '<button class="pick" data-a="chat-chip" data-v="'+c+'">'+c+'</button>'}).join('')+'</div>'+
+   '<div class="chat" id="chatlog" role="log" aria-live="polite" aria-label="Perbualan dengan Cikgu AI"></div>'+
+   '<div class="chatin"><label for="chat-in" class="small muted" style="position:absolute;left:-9999px">Taip soalan</label><input type="text" id="chat-in" maxlength="200" placeholder="Taip soalan tentang Mad Asli" autocomplete="off"><button class="btn" data-a="chat-send">Hantar</button></div>'+
+   '<p class="small muted" style="margin-top:12px">Ruang integrasi AI: tetapan CONFIG.AI_MODE kini “'+CONFIG.AI_MODE+'”. Sambungan kepada perkhidmatan AI sebenar belum diaktifkan.</p>'},
+ init:function(){if(!CHAT.length)CHAT.push({w:'bot',h:'Salam! Saya Cikgu AI. Saya boleh menerangkan Mad Asli, memberi contoh, petunjuk dan soalan latihan. Saya tidak akan terus memberi jawapan kerana anda boleh berfikir sendiri dahulu.',x:null});chatDraw()}
+};
+VIEWS.taksir={
+ html:function(){
+  function card(k,l){var a=S.assess[k],p=a?Math.round(a.ok/a.n*100):0;return '<div class="card"><span class="assure">'+l+'</span><div class="row" style="justify-content:space-between"><b style="font-family:var(--f-display);font-size:1.8rem">'+(a?a.ok+'/'+a.n:'–')+'</b>'+(a?'<span class="chip '+(p>=75?'ok':'sun')+'">'+p+'%</span>':'<span class="chip">Belum dibuat</span>')+'</div><div class="bar" style="margin-top:8px" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+p+'"><i style="width:'+p+'%"></i></div></div>'}
+  var pr=S.assess.pra,po=S.assess.pasca,cmp='';
+  if(pr&&po){var d=Math.round(po.ok/po.n*100)-Math.round(pr.ok/pr.n*100);cmp='<div class="fb '+(d>=0?'ok':'hint')+'" role="status"><b>Perbandingan.</b> '+(d>0?'Markah anda naik '+d+' mata peratus daripada Pra ke Pasca. Syabas!':d===0?'Markah Pra dan Pasca sama. Teruskan berlatih dalam Alami dan Aplikasi.':'Pasca lebih rendah sedikit. Tidak mengapa, ulang nota dan latihan kemudian cuba lagi.')+'</div>'}
+  return '<div class="grid3">'+card('pra','Pra-Penilaian')+card('form','Formatif')+card('pasca','Pasca-Penilaian')+'</div>'+cmp+
+   tabs('as',[['pra','Pra-Penilaian'],['form','Formatif'],['pasca','Pasca-Penilaian']],UI.as,function(k){return S.assess[k]})+'<div id="qz-'+UI.as+'"></div>'+
+   '<div class="card" style="margin-top:20px"><h3>Kuiz interaktif</h3><p class="muted" style="margin:0 0 10px">Kuiz berlatih dengan penjelasan segera ada dalam modul Alami, aktiviti B.</p><a class="btn ghost" href="#alami" data-a="goquiz">Pergi ke Cabaran Kuiz</a></div>'},
+ init:function(){qzDraw(UI.as)}
+};
+VIEWS.refleksi={
+ html:function(){
+  var r=S.refl,wk=weakTags();
+  var pts='<div class="card"><h3>Ingat perkara penting</h3><ul style="margin:0;padding-left:20px">'+LEARNED.slice(0,4).map(function(x){return '<li>'+x+'</li>'}).join('')+'</ul>'+(wk.length?'<p style="margin:12px 0 0"><b>Dalam penilaian, kawasan untuk disemak:</b> '+wk.map(function(k){return '<span class="chip sun">'+TAGS[k]+'</span>'}).join(' ')+'</p>':'')+'</div>';
+  if(r){
+    var go={definisi:'#teroka',huruf:'#teroka',bacaan:'#alami',kenal:'#alami',hots:'#aplikasi'};
+    return '<div class="card"><h3>Refleksi anda telah dihantar</h3><p><b>Tahap kefahaman:</b> '+esc(['','Perlu bantuan','Hampir faham','Faham','Boleh ajar kawan'][r.level])+'</p>'+
+     '<p><b>Saya telah belajar:</b></p><ul>'+r.learned.map(function(i){return '<li>'+LEARNED[i]+'</li>'}).join('')+'</ul>'+
+     (r.hard.length?'<p><b>Konsep yang masih sukar:</b></p><div class="kw">'+r.hard.map(function(k){return '<a class="chip sun" href="'+go[k]+'">'+TAGS[k]+'</a>'}).join('')+'</div><p class="small muted">Tekan konsep untuk kembali ke bahan yang membantu.</p>':'')+
+     (r.q1?'<p><b>Yang paling menarik:</b> '+esc(r.q1)+'</p>':'')+(r.q2?'<p><b>Yang saya mahu cuba lagi:</b> '+esc(r.q2)+'</p>':'')+
+     '<div class="fb ok"><b>Syabas!</b> Anda telah menamatkan perjalanan ini. Teruskan membaca dengan tekun dan sentiasa minta bimbingan guru.</div><div class="row"><button class="btn ghost" data-a="rf-edit">Ubah refleksi</button><a class="btn sun" href="#tamat">Lihat pencapaian '+ic('arrow')+'</a></div></div><div style="margin-top:18px">'+pts+'</div>'}
+  return '<form id="rf" class="card stack" novalidate><fieldset style="border:0;padding:0;margin:0"><legend><b>1. Apa yang telah saya belajar?</b></legend>'+LEARNED.map(function(x,i){return '<label style="display:flex;gap:10px;align-items:flex-start;margin-top:8px;min-height:36px"><input type="checkbox" name="learned" value="'+i+'" style="width:22px;height:22px;margin-top:2px"> <span>'+x+'</span></label>'}).join('')+'</fieldset>'+
+   '<fieldset style="border:0;padding:0;margin:0"><legend><b>2. Tahap kefahaman saya</b></legend><div class="opts" style="margin-top:8px">'+['Perlu bantuan','Hampir faham','Faham','Boleh ajar kawan'].map(function(x,i){return '<label class="pick" style="display:inline-flex;gap:8px;align-items:center"><input type="radio" name="level" value="'+(i+1)+'"> '+x+'</label>'}).join('')+'</div></fieldset>'+
+   '<fieldset style="border:0;padding:0;margin:0"><legend><b>3. Konsep yang masih sukar</b></legend><div class="opts" style="margin-top:8px">'+Object.keys(TAGS).map(function(k){return '<label class="pick" style="display:inline-flex;gap:8px;align-items:center"><input type="checkbox" name="hard" value="'+k+'"> '+TAGS[k]+'</label>'}).join('')+'</div></fieldset>'+
+   '<div><label for="q1"><b>4. Apa yang paling menarik hari ini?</b></label><textarea id="q1" name="q1" rows="2" maxlength="300"></textarea></div>'+
+   '<div><label for="q2"><b>5. Apa yang saya mahu cuba lagi?</b></label><textarea id="q2" name="q2" rows="2" maxlength="300"></textarea><p class="small muted" style="margin:6px 0 0">Jangan tulis nama penuh, alamat atau nombor telefon.</p></div>'+
+   '<fieldset style="border:0;padding:0;margin:0"><legend><b>6. Bantu cikgu memperbaiki bahan ini.</b> Adakah bahan ini mudah difahami?</legend><div class="opts" style="margin-top:8px">'+[['ya','Ya'],['sedikit','Sedikit'],['belum','Belum']].map(function(x){return '<label class="pick" style="display:inline-flex;gap:8px;align-items:center"><input type="radio" name="fbm" value="'+x[0]+'"> '+x[1]+'</label>'}).join('')+'</div></fieldset>'+
+   '<p id="rf-err" class="fb bad" role="alert" hidden>Pilih tahap kefahaman anda dahulu.</p><div><button class="btn sun" type="submit">Hantar refleksi</button></div></form><div style="margin-top:18px">'+pts+'</div>'}
+};
+VIEWS.tamat={
+ html:function(){
+  var dc=doneCount(),all=dc===8,L=lvl(),pr=S.assess.pra,po=S.assess.pasca,eb=BADGES.filter(function(b){return b.f()});
+  var left=learnMods().filter(function(m){return !isDone[m.id]()});
+  return '<div class="'+(all?'':'lockbox')+'"><div class="cert"><span class="assure">EDUVERSE 21</span><h2>Sijil Peneroka Ilmu</h2>'+
+   (all?'<p>Dengan ini disahkan bahawa</p><div class="nm" id="nm">'+esc(S.nick||'Peneroka Ilmu')+'</div><p>telah menamatkan pembelajaran <b>Hukum Mad Asli</b>.</p>':'<p>'+ic('lock')+' Sijil dibuka apabila semua 8 modul selesai. Anda telah menyiapkan '+dc+' modul.</p>')+
+   '<div class="kv"><div><b>'+total()+'</b>mata</div><div><b>'+esc(L.name)+'</b>tahap</div><div><b>'+eb.length+' / '+BADGES.length+'</b>lencana</div>'+(pr?'<div><b>'+pr.ok+'/'+pr.n+'</b>Pra</div>':'')+(po?'<div><b>'+po.ok+'/'+po.n+'</b>Pasca</div>':'')+'</div></div></div>'+
+   (all?'<div class="card" style="margin-top:18px"><label for="nick"><b>Nama timangan untuk sijil</b> (bukan nama penuh)</label><input type="text" id="nick" maxlength="20" value="'+esc(S.nick)+'" autocomplete="off"></div><div class="msg-box" style="margin-top:20px"><b>Tahniah, peneroka ilmu!</b> Setiap ketukan yang betul membawa anda lebih dekat kepada bacaan yang indah. Teruskan belajar bersama guru dan keluarga.</div>':
+   '<div class="card" style="margin-top:18px"><h3>Modul yang belum selesai</h3><div class="kw">'+left.map(function(m){return '<a class="chip sun" href="#'+m.id+'">'+m.t+'</a>'}).join('')+'</div></div>')+
+   gpHtml()+
+   '<div class="card" style="margin-top:20px"><h3>Mulakan semula</h3><p class="muted">Ini memadam mata, lencana dan jawapan yang disimpan pada peranti ini.</p>'+
+   (UI.rs?'<div class="fb bad" role="alert"><b>Pasti?</b> Semua kemajuan akan dipadam.</div><div class="row"><button class="btn" data-a="reset-yes">Ya, padam</button><button class="btn ghost" data-a="reset-no">Batal</button></div>':'<button class="btn ghost" data-a="reset-ask">Mulakan semula</button>')+'</div>'}
+};
+
+/* ---------- pengendali acara ---------- */
+var H={};
+H.start=function(){if(!S.done.start){S.done.start=true;award('start',5)}};
+H.prof=function(t){S.profile[t.dataset.k]=t.dataset.v;if(t.dataset.k==='pref')UI.tk=null;save();draw()};
+H.tab=function(t){UI[t.dataset.g]=t.dataset.v;draw()};
+H['obj-open']=function(t){var k='ob'+t.dataset.v;UI[k]=!UI[k];draw()};
+H['obj-ok']=function(t){S.obj[t.dataset.v]=true;award('obj'+t.dataset.v,5);draw()};
+H.note=function(t){var i=+t.dataset.v;UI.no=UI.no===i?-1:i;if(UI.no===i&&!S.notes[i]){S.notes[i]=true;award('n'+i,2);if(Object.keys(S.notes).length===NOTES.length&&!S.teroka.nota){S.teroka.nota=true;award('t-nota',5);save()}}draw()};
+H['info-go']=function(t){UI.is=+t.dataset.v;if(UI.is===3&&!S.teroka.info){S.teroka.info=true;award('t-info',10)}draw()};
+H['vid-toggle']=function(){if(VID.play){vidStop()}else{if(VID.i===SC.length-1&&VID.t>=SC_MS){VID.i=0;VID.t=0}vidStart()}vidDraw()};
+H['vid-restart']=function(){vidStop();VID.i=0;VID.t=0;VID.q=null;vidDraw()};
+H['vid-go']=function(t){vidStop();VID.i=+t.dataset.v;VID.t=0;VID.q=null;vidDraw()};
+H['vid-ans']=function(t){if(!VID.q||VID.q.k!==null)return;VID.q.k=+t.dataset.k;VID.asked[VID.q.i]=true;
+  if(SC.every(function(s,i){return !s.q||VID.asked[i]})&&!S.teroka.video){S.teroka.video=true;award('t-video',15)}vidDraw()};
+H['vid-cont']=function(){VID.q=null;if(VID.i<SC.length-1){VID.i++;VID.t=0;vidStart()}else{VID.t=SC_MS}vidDraw()};
+H['aud-play']=function(t){audSpeak(+t.dataset.v)};
+H['aud-pause']=function(){if(hasTTS())window.speechSynthesis.pause();AUD.st='pause';audDraw()};
+H['aud-resume']=function(){if(hasTTS())window.speechSynthesis.resume();AUD.st='play';audDraw()};
+H['aud-replay']=function(t){audSpeak(+t.dataset.v)};
+H['fc-flip']=function(){var c=$('#fcard');if(!c)return;c.classList.toggle('flip');if(!S.flash[UI.fc]){S.flash[UI.fc]=true;var p=$('#fcprog');if(p)p.textContent='Kad dibalik: '+Object.keys(S.flash).length+' / '+FC.length;
+  if(Object.keys(S.flash).length===FC.length&&!S.teroka.flash){S.teroka.flash=true;award('t-flash',15)}else save()}};
+H['fc-go']=function(t){UI.fc=(UI.fc+(+t.dataset.v)+FC.length)%FC.length;fcDraw();var b=$('[data-fk="fcf"]');if(b)b.focus({preventScroll:true})};
+H['mt-chip']=function(t){MT.sel=(MT.sel===+t.dataset.c)?null:+t.dataset.c;mtDraw()};
+H['mt-slot']=function(t){if(MT.sel===null){MT.msg='Pilih satu konsep dahulu, kemudian ketik definisi.';mtDraw();return}mtTry(MT.sel,+t.dataset.s)};
+H['mt-reset']=function(){mtInit();mtDraw()};
+H['qz-go']=function(t){qzStart(t.dataset.id)};
+H['qz-again']=function(t){qzStart(t.dataset.id)};
+H['qz-hint']=function(t){var z=QZ[t.dataset.id];z.hintOn=true;z.hu++;qzDraw(z.id)};
+H['qz-pick']=function(t){
+  var z=QZ[t.dataset.id],k=+t.dataset.k,q=QB[z.qids[z.i]];if(!z||z.st!=='ask'||z.dis.indexOf(k)>=0)return;
+  if(k===q.a){z.ok++;z.log.push({id:z.qids[z.i],ok:true});z.st='fb';z.pick=k;z.good=true;z.msg='<b>'+(z.tries?'Bagus, anda berjaya!':'Betul!')+'</b> '+q.e}
+  else if(z.retry&&z.tries<1){z.tries++;z.dis.push(k);z.hintOn=true;z.msg='<b>Belum tepat, tidak mengapa.</b> Baca petunjuk dan cuba lagi.'}
+  else{z.log.push({id:z.qids[z.i],ok:false});z.st='fb';z.pick=k;z.good=false;z.msg='<b>Hampir!</b> '+q.e}
+  qzDraw(z.id)};
+H['qz-open']=function(t){var z=QZ[t.dataset.id],q=QB[z.qids[z.i]],ta=document.getElementById('qo-'+z.id),v=ta?ta.value.trim():'';
+  if(v.length<10){z.msg='Tulis sekurang-kurangnya satu ayat.';qzDraw(z.id);var n=document.getElementById('qo-'+z.id);if(n){n.value=v;n.focus()}return}
+  z.ok++;z.log.push({id:z.qids[z.i],ok:true});z.st='fb';z.good=true;z.msg='<b>Terima kasih!</b> '+q.fbk;qzDraw(z.id)};
+H['qz-next']=function(t){var z=QZ[t.dataset.id];qzNext(z);qzDraw(z.id);save()};
+H['rc-start']=function(){rcClear();RC={i:0,streak:0,pts:0,right:0,st:'ask',left:12,tm:null};rcAsk()};
+H['rc-ans']=function(t){rcAnswer(+t.dataset.v)};
+H['rc-next']=function(){rcNext()};
+H.path=function(t){S.pathway=t.dataset.v;save();draw()};
+H.demo=function(){var d=$('#demo');if(!d)return;d.classList.add('run');setTimeout(function(){d.classList.remove('run')},3600)};
+H['chat-send']=function(){var i=$('#chat-in');if(i){var v=i.value;i.value='';chatSend(v);i.focus()}};
+H['chat-chip']=function(t){chatSend(t.dataset.v)};
+H['chat-pick']=function(t){
+  var id=t.dataset.q,k=+t.dataset.k;if(!PEND||PEND.id!==id){chatPush('bot','Tekan “Beri soalan latihan” untuk soalan baharu.');return}
+  var q=QB[id];CHAT.push({w:'me',h:'Jawapan saya: '+q.o[k]});
+  if(k===q.a){PEND=null;chatPush('bot','<b>Betul!</b> '+q.e+THINK+'bolehkah anda beri satu contoh lain?')}
+  else if(PEND.tries<1){PEND.tries++;chatPush('bot','Hampir! <b>Petunjuk:</b> '+TAGHINT[q.t]+' Cuba lagi.')}
+  else{PEND=null;chatPush('bot','Tidak mengapa. '+q.e+' Cuba soalan lain bila anda sedia.')}};
+H['rf-edit']=function(){S.refl=null;save();draw()};
+H.goquiz=function(){UI.al='B'};
+H['reset-ask']=function(){UI.rs=true;draw()};
+H['reset-no']=function(){UI.rs=false;draw()};
+H['reset-yes']=function(){UI.rs=false;try{localStorage.removeItem(KEY)}catch(e){}mem=null;S=defaults();CHAT=[];PEND=null;QZ={};MT=null;RC=null;UI.tk=null;UI.no=-1;UI.is=0;UI.fc=0;UI.al='A';UI.as='pra';VID={i:0,t:0,play:false,asked:{},q:null,tm:null};AUD={cur:-1,st:'idle'};
+  if(location.hash==='#utama'||!location.hash)route();else location.hash='#utama'};
+
+var app=$('#app');
+app.addEventListener('click',function(e){var t=e.target.closest('[data-a]');if(!t||t.disabled)return;var f=H[t.dataset.a];if(f)f(t,e)});
+app.addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.id==='chat-in'){e.preventDefault();H['chat-send']()}});
+app.addEventListener('input',function(e){if(e.target.id==='nick'){S.nick=e.target.value.slice(0,20);persist();var n=$('#nm');if(n)n.textContent=S.nick||'Peneroka Ilmu'}});
+app.addEventListener('submit',function(e){
+  e.preventDefault();if(e.target.id!=='rf')return;
+  var f=e.target,lv=f.querySelector('input[name=level]:checked'),err=$('#rf-err');
+  if(!lv){err.hidden=false;err.scrollIntoView({block:'center'});return}
+  var fbm=f.querySelector('input[name=fbm]:checked');
+  S.refl={level:+lv.value,learned:$$('input[name=learned]:checked',f).map(function(x){return +x.value}),hard:$$('input[name=hard]:checked',f).map(function(x){return x.value}),q1:f.querySelector('[name=q1]').value.trim().slice(0,300),q2:f.querySelector('[name=q2]').value.trim().slice(0,300),fb:fbm?fbm.value:null};
+  award('refl',20);save();draw();window.scrollTo(0,0)});
+/* seret dan lepas (papar kekunci dan sentuhan guna ketik-pilih) */
+app.addEventListener('dragstart',function(e){var c=e.target.closest&&e.target.closest('.chipd');if(!c)return;e.dataTransfer.setData('text/plain',c.dataset.c);e.dataTransfer.effectAllowed='move';MT.sel=null});
+app.addEventListener('dragover',function(e){var s=e.target.closest&&e.target.closest('.slot');if(s&&!s.disabled){e.preventDefault();s.classList.add('over')}});
+app.addEventListener('dragleave',function(e){var s=e.target.closest&&e.target.closest('.slot');if(s)s.classList.remove('over')});
+app.addEventListener('drop',function(e){var s=e.target.closest&&e.target.closest('.slot');if(!s||s.disabled)return;e.preventDefault();var c=e.dataTransfer.getData('text/plain');if(c!=='')mtTry(+c,+s.dataset.s)});
+window.addEventListener('hashchange',route);
+if(hasTTS()&&window.speechSynthesis.getVoices)window.speechSynthesis.getVoices();
+route();
+})();
+</script>
